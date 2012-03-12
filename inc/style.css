@@ -74,7 +74,6 @@ td { vertical-align: top; }
    Author:
    ========================================================================== */
 body {position:relative; background-color:#300; }
-div#book_mid { width:960px; background-image: url('../img/book_repeat.jpg'); background-position:center top; background-repeat:repeat-y; margin:0 auto; height:500px; }
 div#book_top, div#book_bot { width:960px;}
 div#book_top { position:absolute; top:0px; }
 div#book_bot { position:absolute; bottom:0px; }
@@ -128,3 +127,4 @@ div#book_bot { position:absolute; bottom:0px; }
   p, h2, h3 { orphans: 3; widows: 3; }
   h2, h3 { page-break-after: avoid; }
 }
+div#book_mid { width:960px; background-image: url('../img/book_mid.jpg'); background-position:center 287px; background-repeat:repeat-y; margin:0 auto; height:500px; position:relative; }

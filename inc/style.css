@@ -85,6 +85,13 @@ div#right_col { top:10px; left:495px; }
 
 p { margin:0 0 1em 0; }
 
+.loader { display: inline-block; height:16px; width:16px; margin:0 5px;
+	-o-transition: opacity 0.25s linear;
+	-moz-transition: opacity 0.25s linear;
+	-webkit-transition: opacity 0.25s linear;
+	transition: opacity 0.25s linear;
+}
+
 
 /*
  * CSS Styles that are needed by jScrollPane for it to operate correctly.

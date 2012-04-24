@@ -1,6 +1,6 @@
 web1:
   name: merlin
-  php_extensions: [pdo, gd]
+  php_extensions: [pdo, pdo_mysql, gd]
 
 db1:
   name: icebox

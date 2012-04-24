@@ -74,7 +74,7 @@ td { vertical-align: top; }
    Author:
    ========================================================================== */
 body {position:relative; background-color:#300; }
-div#book_mid { width:960px; background-image: url('../img/book_mid.jpg'); background-position:center 287px; background-repeat:repeat-y; margin:0 auto; height:500px; position:relative; }
+div#book_mid { width:960px; background-image: url('img/book_mid.jpg'); background-position:center 287px; background-repeat:repeat-y; margin:0 auto; height:500px; position:relative; }
 div#book_top, div#book_bot { width:960px;}
 div#book_top { position:absolute; top:0px; }
 div#book_bot { position:absolute; bottom:0px; }

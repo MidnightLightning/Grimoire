@@ -85,6 +85,9 @@ div#right_col { top:10px; left:495px; }
 
 p { margin:0 0 1em 0; }
 
+#grim_display h1#grim_title { border-bottom:solid 1px #A90; }
+#grim_display h1#grim_title.default { color:rgba(0,0,0, 0.3); }
+
 .loader { display: inline-block; height:16px; width:16px; margin:0 5px;
 	-o-transition: opacity 0.25s linear;
 	-moz-transition: opacity 0.25s linear;

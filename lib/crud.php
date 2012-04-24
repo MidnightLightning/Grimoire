@@ -97,8 +97,10 @@ class crud {
 		if ($stmt->rowCount() < 1) { $this->fail_out(self::ERR_INTERNAL_ERROR, 'SQL Failed insert: '.var_dump($db->errorInfo(), true)); }
 		$out = new CrudResponse();
 		$out->id = $db->lastInsertId();
+		header("HTTP/1.0 ".self::ERR_CREATED);
 		$out->error = self::ERR_CREATED;
-		return($out);
+		echo json_encode($out);
+		exit;
 	}
 	
 	protected function _doRead() {
@@ -109,9 +111,9 @@ class crud {
 		$data = $stmt->fetch(PDO::FETCH_OBJ);
 		if (!$data) { $this->fail_out(self::ERR_NOT_FOUND, "No such record"); }
 		$out = new CrudResponse();
-		$out->error = self::ERR_OK;
 		$out->data = $data;
-		return($out);
+		echo json_encode($out);
+		exit;
 	}
 	
 	protected function _doUpdate() {
@@ -121,10 +123,9 @@ class crud {
 		$sql = substr($sql, 0,-2).') VALUES (';
 		foreach($keys as $key) {
 			if ($key == $this->pk_var) continue; // Skip PK var
-			$sql .= '"'.$key'"=?, ';
+			$sql .= '"'.$key.'"=?, ';
 		}
-		$sql = substr($sql,0,-2);
-		$sql .= ' WHERE '.$this->pk_field.'=?';
+		$sql = substr($sql,0,-2).' WHERE '.$this->pk_field.'=?';
 
 		$db = $this->db; // Get PDO object
 		$stmt = $db->prepare($sql);
@@ -144,7 +145,8 @@ class crud {
 		if (!$rs) { $this->fail_out(self::ERR_INTERNAL_ERROR, 'SQL update failed: '.var_dump($db->errorInfo(), true)); }
 		$out = new CrudResponse();
 		$out->error = self::ERR_OK;
-		return($out);
+		echo json_encode($out);
+		exit;
 	}
 	
 	protected function _doDelete() {
@@ -156,7 +158,8 @@ class crud {
 		if (!$rs) { $this->fail_out(self::ERR_INTERNAL_ERROR, 'SQL delete failed: '.var_dump($db->errorInfo(), true)); }
 		$out = new CrudResponse();
 		$out->error = self::ERR_OK;
-		return($out);
+		echo json_encode($out);
+		exit;
 	}
 	
 	function fail_out($err_no, $message) {

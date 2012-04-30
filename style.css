@@ -85,6 +85,8 @@ div#right_col { top:10px; left:495px; }
 
 p { margin:0 0 1em 0; }
 
+table#features td { padding-bottom:1em; }
+
 #grim_display h1#grim_title { border-bottom:solid 1px #A90; }
 #grim_display h1#grim_title.default { color:rgba(0,0,0, 0.3); }
 

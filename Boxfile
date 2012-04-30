@@ -4,6 +4,7 @@ web1:
   after_build:
     - "mv .htaccess.pg .htaccess"
     - "mv lib/db.pg.php lib/db.php"
+    - "mv config.pg.php config.php"
 
 db1:
   name: icebox

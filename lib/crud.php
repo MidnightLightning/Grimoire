@@ -121,7 +121,7 @@ class crud {
 		$sql = substr($sql, 0,-2).') VALUES (';
 		foreach($keys as $key) {
 			if ($key == $this->pk_var) continue; // Skip PK var
-			$sql .= '"'.$key'"=?, ';
+			$sql .= '"'.$key.'"=?, ';
 		}
 		$sql = substr($sql,0,-2);
 		$sql .= ' WHERE '.$this->pk_field.'=?';

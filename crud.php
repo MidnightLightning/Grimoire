@@ -55,14 +55,14 @@ class crud {
 		switch ($_SERVER['REQUEST_METHOD']) { // The HTTP method that was used to fetch the page
 			case 'POST':
 				if (isset($_POST[$this->pk_var])) {
-					$this->_doUpdate();
+					return $this->_doUpdate();
 				} else {
-					$this->_doCreate();
+					return $this->_doCreate();
 				}
 			case 'GET':
-				$this->_doRead();
+				return $this->_doRead();
 			case 'DELETE':
-				$this->_doDelete();
+				return $this->_doDelete();
 			default:
 				$this->fail_out(self::ERR_BAD_REQUEST, 'Action not recognized');
 		}

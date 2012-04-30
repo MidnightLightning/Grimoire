@@ -1,0 +1,8 @@
+# Pagodabox config file
+<IfModule mod_rewrite.c>
+	RewriteEngine	on
+	RewriteBase /
+
+	RewriteRule ^g/([a-zA-Z0-9]+)/?$                 index.php?id=$1 [L]
+	RewriteRule ^api/grimoire/([a-zA-Z0-9]+)/?$      api/grimoire.php?id=$1 [QSA,L]
+</IfModule>

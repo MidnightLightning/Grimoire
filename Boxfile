@@ -1,6 +1,9 @@
 web1:
   name: merlin
   php_extensions: [pdo, pdo_mysql, gd]
+  after_build:
+    - "mv .htaccess.pg .htaccess"
+    - "mv lib/db.pg.php lib/db.php"
 
 db1:
   name: icebox

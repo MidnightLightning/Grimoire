@@ -55,14 +55,14 @@ class crud {
 		switch ($_SERVER['REQUEST_METHOD']) { // The HTTP method that was used to fetch the page
 			case 'POST':
 				if (isset($_POST[$this->pk_var])) {
-					$this->_doUpdate();
+					return $this->_doUpdate();
 				} else {
-					$this->_doCreate();
+					return $this->_doCreate();
 				}
 			case 'GET':
-				$this->_doRead();
+				return $this->_doRead();
 			case 'DELETE':
-				$this->_doDelete();
+				return $this->_doDelete();
 			default:
 				$this->fail_out(self::ERR_BAD_REQUEST, 'Action not recognized');
 		}
@@ -71,7 +71,7 @@ class crud {
 	protected function _doCreate() {
 		// Every value in the $_POST array is a column in the database; insert that data into a row
 		$keys = array_keys($_POST);
-		$sql = 'INSERT INTO "'.$this->table_name.'" (';
+		$sql = 'INSERT INTO "'.$this->table.'" (';
 		foreach($keys as $key) {
 			$sql .= '"'.$key.'", ';
 		}
@@ -97,35 +97,34 @@ class crud {
 		if ($stmt->rowCount() < 1) { $this->fail_out(self::ERR_INTERNAL_ERROR, 'SQL Failed insert: '.var_dump($db->errorInfo(), true)); }
 		$out = new CrudResponse();
 		$out->id = $db->lastInsertId();
-		header("HTTP/1.0 ".self::ERR_CREATED);
 		$out->error = self::ERR_CREATED;
-		echo json_encode($out);
-		exit;
+		return($out);
 	}
 	
 	protected function _doRead() {
 		if (!isset($_GET[$this->pk_var])) { $this->fail_out(self::ERR_BAD_REQUEST, 'No ID specified'); }
 		$db = $this->db; // Get PDO object
-		$stmt = $db->prepare('SELECT * FROM "'.$this->table_name.'" WHERE '.$this->pk_field.'=?');
+		$stmt = $db->prepare('SELECT * FROM "'.$this->table.'" WHERE '.$this->pk_field.'=?');
 		$stmt->execute(array($_GET[$this->pk_var]));
 		$data = $stmt->fetch(PDO::FETCH_OBJ);
 		if (!$data) { $this->fail_out(self::ERR_NOT_FOUND, "No such record"); }
 		$out = new CrudResponse();
+		$out->error = self::ERR_OK;
 		$out->data = $data;
-		echo json_encode($out);
-		exit;
+		return($out);
 	}
 	
 	protected function _doUpdate() {
 		// Every value in the $_POST array except the primary key is a column in the database; update that data
 		$keys = array_keys($_POST);
-		$sql = 'UPDATE "'.$this->table_name.'" SET ';
+		$sql = 'UPDATE "'.$this->table.'" SET ';
 		$sql = substr($sql, 0,-2).') VALUES (';
 		foreach($keys as $key) {
 			if ($key == $this->pk_var) continue; // Skip PK var
-			$sql .= '"'.$key.'"=?, ';
+			$sql .= '"'.$key'"=?, ';
 		}
-		$sql = substr($sql,0,-2).' WHERE '.$this->pk_field.'=?';
+		$sql = substr($sql,0,-2);
+		$sql .= ' WHERE '.$this->pk_field.'=?';
 
 		$db = $this->db; // Get PDO object
 		$stmt = $db->prepare($sql);
@@ -145,21 +144,19 @@ class crud {
 		if (!$rs) { $this->fail_out(self::ERR_INTERNAL_ERROR, 'SQL update failed: '.var_dump($db->errorInfo(), true)); }
 		$out = new CrudResponse();
 		$out->error = self::ERR_OK;
-		echo json_encode($out);
-		exit;
+		return($out);
 	}
 	
 	protected function _doDelete() {
 		if (!isset($_GET[$this->pk_var])) { $this->fail_out(self::ERR_BAD_REQUEST, 'No ID specified'); }
 		$db = $this->db; // Get PDO object
-		$stmt = $db->prepare('DELETE FROM "'.$this->table_name.'" WHERE '.$this->pk_field.'=?');
+		$stmt = $db->prepare('DELETE FROM "'.$this->table.'" WHERE '.$this->pk_field.'=?');
 		$stmt->execute(array($_GET[$this->pk_var]));
 		$rs = $stmt->execute();
 		if (!$rs) { $this->fail_out(self::ERR_INTERNAL_ERROR, 'SQL delete failed: '.var_dump($db->errorInfo(), true)); }
 		$out = new CrudResponse();
 		$out->error = self::ERR_OK;
-		echo json_encode($out);
-		exit;
+		return($out);
 	}
 	
 	function fail_out($err_no, $message) {

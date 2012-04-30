@@ -1,20 +1,5 @@
 var $curGrim = null;
 $(document).ready(function() {
-	// Set the page to display the book background properly
-	var windowHeight = $(window).height();
-	$('div#book_mid').height(windowHeight);
-	
-	$('div#left_col').height(windowHeight-20).jScrollPane();
-	$('div#right_col').height(windowHeight-20).jScrollPane();
-
-	$(window).resize(function() {
-		var windowHeight = $(window).height();
-		$('div#book_mid').height(windowHeight);
-
-		$('div#left_col').height(windowHeight-20).jScrollPane();
-		$('div#right_col').height(windowHeight-20).jScrollPane();
-	});
-
 	// Save data to the "grim_display" wrapper object
 	$curGrim = $('div#grim_display');
 	$curGrim.data('slots', []); // Start with empty slots array

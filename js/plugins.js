@@ -9,6 +9,23 @@ window.log = function f(){ log.history = log.history || []; log.history.push(arg
 
 // place any jQuery/helper plugins in here, instead of separate, slower script files.
 
+// Set the page to display the book background properly
+$(document).ready(function() {
+	var windowHeight = $(window).height();
+	$('div#book_mid').height(windowHeight);
+	
+	$('div#left_col').height(windowHeight-20).jScrollPane();
+	$('div#right_col').height(windowHeight-20).jScrollPane();
+
+	$(window).resize(function() {
+		var windowHeight = $(window).height();
+		$('div#book_mid').height(windowHeight);
+
+		$('div#left_col').height(windowHeight-20).jScrollPane();
+		$('div#right_col').height(windowHeight-20).jScrollPane();
+	});
+});
+
 
 /*! Copyright (c) 2011 Brandon Aaron (http://brandonaaron.net)
  * Licensed under the MIT License (LICENSE.txt).

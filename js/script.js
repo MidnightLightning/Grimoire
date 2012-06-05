@@ -91,6 +91,86 @@ function addSlot(name) {
 	return true;
 }
 
+function save() {
+	// Save to the server, if online
+	saveRemote();
+	// Save locally, if possible
+	saveLocal();
+}
+
+function saveRemote() {
+	console.log('Saving remote...');
+	if (!isOnline()) return false;
+	console.log('Online');
+	if ($curGrim.data('id') == false) {
+		// We have no ID yet; do a create call
+		console.log('Creating Grimoire');
+		$.ajax({
+			url: 'api/grimoire/',
+			type: 'POST',
+			dataType: 'json',
+			timeout: 10000,
+			cache: false,
+			data: {
+				name: $curGrim.data('title'),
+			},
+			success: function(data, status, xhr) {
+				$curGrim.data('id', data.public_key+data.admin_key); // Record own ID
+				saveRemote(); // Call self again to save slots
+			},
+			error: function(xhr, status, err) {
+				console.log(status, err);
+			}
+		});
+	} else {
+		// We do have an ID; save the slots
+		var slots = $curGrim.data('slots');
+		if ($curGrim.data('rowSaveCursor') == undefined) {
+			// Set up save
+			$curGrim.data('rowSaveCursor', slots.length-1);
+			saveRemote(); // Call self again to start the save process
+		} else {
+			// Save that row
+			var cursor = $curGrim.data('rowSaveCursor');
+			var row = slots[cursor];
+			console.log(JSON.stringify(row));
+			$.ajax({
+				url: 'api/row/',
+				type: 'POST',
+				dataType: 'json',
+				timeout: 10000,
+				cache: false,
+				async: false, // Do the saves synchronously
+				data: {
+					gid: $curGrim.data('id'),
+					order: cursor,
+					data: JSON.stringify(row),
+				},
+				success: function(data, status, xhr) {
+					if (cursor == 0) {
+						// That was the last row
+						$curGrim.removeData('rowSaveCursor');
+						
+						// Check URL for ID
+						var parts = window.location.pathname.split('/');
+						if (parts[parts.length-1] == 'app') {
+							// Redirect
+							parts[parts.length-1] = 'g';
+							parts.push($curGrim.data('id'));
+							//window.location.replace(window.location.protocol + '//' + window.location.host + parts.join('/'));
+						}
+					} else {
+						$curGrim.data('rowSaveCursor', cursor-1); // Decrement cursor
+						saveRemote(); // Save the next row
+					}
+				},
+				error: function(xhr, status, err) {
+					console.log(status, err);
+				}
+			});
+		}
+	}
+}
 
 function saveLocal() {
 	if (!Modernizr.localstorage) return false;

@@ -24,6 +24,18 @@ $(document).ready(function() {
 		$('div#left_col').height(windowHeight-20).jScrollPane();
 		$('div#right_col').height(windowHeight-20).jScrollPane();
 	});
+
+	// Ajax loader that reacts to every Ajax request
+	$('.loader')
+		.css('opacity', 0)
+		.on('ajaxStart', function(e) {
+			console.log('Start');
+			$(this).css('opacity', 1);
+		})
+		.on('ajaxStop', function(e) {
+			console.log('Stop');
+			$(this).css('opacity', 0);
+		});
 });
 
 

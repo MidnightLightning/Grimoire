@@ -27,6 +27,8 @@ require_once('config.php');
 	if (isset($_GET['id'])) {
 		// Pass the Grimoire ID along to Javascript
 		echo "\tvar grim_id = '{$_GET['id']}';\n";
+	} else {
+		echo "\tvar grim_id = false;\n";
 	}
 ?>
 	</script>
@@ -40,13 +42,14 @@ require_once('config.php');
 <div id="book_bot"><img src="<?= $doc_root ?>img/book_bot.jpg" alt="" /></div>
 
 <div id="left_col">
-<div id="grim_display">
+<p id="page_loading" style="position:absolute; top:0; width:100%; text-align:center; font-style:italic;"><img src="<?= $doc_root ?>img/tref_load.svg" /><br /><span class="message">Reticulating splines...</span></p>
+
+<div id="grim_display" style="display:none;">
 <h1 id="grim_title" class="default">New Grimoire</h1>
 <ul id="grim_slots">
 </ul>
 <div id="new_slot"><input type="text" id="new_slot_text" /></div>
 </div>
-<p style="text-align:center; font-style:italic;"><img src="<?= $doc_root ?>img/tref_load.svg" /><br />Reticulating splines...</p>
 </div>
 <div id="right_col">
 </div>

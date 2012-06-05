@@ -5,16 +5,6 @@ $(document).ready(function() {
 	$curGrim.data('slots', []); // Start with empty slots array
 	restoreLocal(); // Attempt to restore any saved slots
 	
-	// Ajax loader that reacts to every Ajax request
-	$('.loader')
-		.css('opacity', 0)
-		.on('ajaxStart', function(e) {
-			console.log('Start');
-			$(this).css('opacity', 1);
-		})
-		.on('ajaxStop', function(e) {
-			console.log('Stop');
-			$(this).css('opacity', 0);
 		});
 	
 	// New slot save action

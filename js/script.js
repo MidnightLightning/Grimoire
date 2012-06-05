@@ -11,7 +11,7 @@ $(document).ready(function() {
 	if ($curGrim.data('id') !== false) {
 		// Linked to an online ID; attempt to look it up.
 		$.ajax({
-			url: '../api/grimoire/'+$curGrim.data('id'),
+			url: 'api/grimoire/'+$curGrim.data('id'),
 			type: 'GET',
 			dataType: 'json',
 			success: function(rs, status, xhr) {

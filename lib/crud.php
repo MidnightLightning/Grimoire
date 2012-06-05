@@ -71,9 +71,9 @@ class crud {
 	protected function _doCreate() {
 		// Every value in the $_POST array is a column in the database; insert that data into a row
 		$keys = array_keys($_POST);
-		$sql = 'INSERT INTO "'.$this->table.'" (';
+		$sql = 'INSERT INTO `'.$this->table.'` (';
 		foreach($keys as $key) {
-			$sql .= '"'.$key.'", ';
+			$sql .= '`'.$key.'`, ';
 		}
 		$sql = substr($sql, 0,-2).') VALUES (';
 		foreach($keys as $key) {
@@ -104,7 +104,7 @@ class crud {
 	protected function _doRead() {
 		if (!isset($_GET[$this->pk_var])) { $this->fail_out(self::ERR_BAD_REQUEST, 'No ID specified'); }
 		$db = $this->db; // Get PDO object
-		$stmt = $db->prepare('SELECT * FROM "'.$this->table.'" WHERE '.$this->pk_field.'=?');
+		$stmt = $db->prepare('SELECT * FROM `'.$this->table.'` WHERE `'.$this->pk_field.'`=?');
 		$stmt->execute(array($_GET[$this->pk_var]));
 		$data = $stmt->fetch(PDO::FETCH_OBJ);
 		if (!$data) { $this->fail_out(self::ERR_NOT_FOUND, "No such record"); }

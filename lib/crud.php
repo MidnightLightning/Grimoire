@@ -94,10 +94,10 @@ class crud {
 			}
 		}
 		$stmt->execute();
-		if ($stmt->rowCount() < 1) { $this->fail_out(self::ERR_INTERNAL_ERROR, 'SQL Failed insert: '.var_dump($db->errorInfo(), true)); }
+		if ($stmt->rowCount() < 1) { $this->fail_out(self::ERR_INTERNAL_ERROR, 'SQL Failed insert: '.var_export($stmt->errorInfo(), true)); }
 		$out = new CrudResponse();
 		$out->id = $db->lastInsertId();
-		$out->error = self::ERR_CREATED;
+		$out->err_no = self::ERR_CREATED;
 		return($out);
 	}
 	
@@ -107,9 +107,9 @@ class crud {
 		$stmt = $db->prepare('SELECT * FROM `'.$this->table.'` WHERE `'.$this->pk_field.'`=?');
 		$stmt->execute(array($_GET[$this->pk_var]));
 		$data = $stmt->fetch(PDO::FETCH_OBJ);
-		if (!$data) { $this->fail_out(self::ERR_NOT_FOUND, "No such record"); }
+		if (!$data) { $this->fail_out(self::ERR_NOT_FOUND, "No such record as {$_GET[$this->pk_var]}"); }
 		$out = new CrudResponse();
-		$out->error = self::ERR_OK;
+		$out->err_no = self::ERR_OK;
 		$out->data = $data;
 		return($out);
 	}
@@ -128,7 +128,7 @@ class crud {
 
 		$db = $this->db; // Get PDO object
 		$stmt = $db->prepare($sql);
-		if (!$stmt) { $this->fail_out(self::ERR_INTERNAL_ERROR, 'SQL error: '.$sql.': '.$db->errorInfo()); }
+		if (!$stmt) { $this->fail_out(self::ERR_INTERNAL_ERROR, 'SQL error: '.$sql.': '.$stmt->errorInfo()); }
 		foreach($keys as $i => $key) {
 			if ($key == $this->pk_var) continue; // Skip PK var
 			if (!is_numeric($_POST[$key]) && $_POST[$key] != 'NULL') {
@@ -141,9 +141,9 @@ class crud {
 		}
 		$stmt->bindValue($i+2, $_POST[$this->pk_var]); // Bind PK
 		$rs = $stmt->execute();
-		if (!$rs) { $this->fail_out(self::ERR_INTERNAL_ERROR, 'SQL update failed: '.var_dump($db->errorInfo(), true)); }
+		if (!$rs) { $this->fail_out(self::ERR_INTERNAL_ERROR, 'SQL update failed: '.var_export($stmt->errorInfo(), true)); }
 		$out = new CrudResponse();
-		$out->error = self::ERR_OK;
+		$out->err_no = self::ERR_OK;
 		return($out);
 	}
 	
@@ -153,9 +153,9 @@ class crud {
 		$stmt = $db->prepare('DELETE FROM "'.$this->table.'" WHERE '.$this->pk_field.'=?');
 		$stmt->execute(array($_GET[$this->pk_var]));
 		$rs = $stmt->execute();
-		if (!$rs) { $this->fail_out(self::ERR_INTERNAL_ERROR, 'SQL delete failed: '.var_dump($db->errorInfo(), true)); }
+		if (!$rs) { $this->fail_out(self::ERR_INTERNAL_ERROR, 'SQL delete failed: '.var_export($stmt->errorInfo(), true)); }
 		$out = new CrudResponse();
-		$out->error = self::ERR_OK;
+		$out->err_no = self::ERR_OK;
 		return($out);
 	}
 	

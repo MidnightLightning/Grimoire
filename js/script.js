@@ -8,6 +8,7 @@ $(document).ready(function() {
 	
 	// Initialize
 	var $page_loader = $('p#page_loading').data('loading', true);
+	restoreLocal(); // Attempt to restore any saved slots
 	if ($curGrim.data('id') !== false) {
 		// Linked to an online ID; attempt to look it up.
 		$.ajax({
@@ -34,7 +35,6 @@ $(document).ready(function() {
 			}
 		});
 	} else {
-		restoreLocal(); // Attempt to restore any saved slots
 		$page_loader.hide();
 		$curGrim.show();
 		saveRemote();
@@ -150,6 +150,7 @@ function saveRemote() {
 			},
 			success: function(data, status, xhr) {
 				$curGrim.data('id', data.public_key+data.admin_key); // Record own ID
+				saveLocal(); // Update local GID
 				saveRemote(); // Call self again to save slots
 			},
 			error: function(xhr, status, err) {

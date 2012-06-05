@@ -12,7 +12,7 @@ class crud {
 	const ERR_NO_CONTENT = 204;
 	const ERR_SEE_OTHER = 303;
 	const ERR_BAD_REQUEST = 400;
-	const ERR_NOT_FOUND = 400;
+	const ERR_NOT_FOUND = 404;
 	const ERR_INTERNAL_ERROR = 500;
 	
 	/**

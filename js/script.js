@@ -25,9 +25,11 @@ $(document).ready(function() {
 				if (err == "Not Found") {
 					// Bad ID
 					var pieces = window.location.href.split('/');
-					pieces.pop(); // Remove the ID number
-					pieces[pieces.length-1] = 'app';
-					window.location.href = pieces.join('/');
+					if (pieces[pieces.length-1] != 'app') {
+						pieces.pop(); // Remove the ID number
+						pieces[pieces.length-1] = 'app';
+						window.location.href = pieces.join('/');
+					}
 				}
 			}
 		});

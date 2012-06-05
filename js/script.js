@@ -1,11 +1,43 @@
 var $curGrim = null;
 $(document).ready(function() {
 	// Save data to the "grim_display" wrapper object
-	$curGrim = $('div#grim_display');
+	$curGrim = $('div#grim_display'); // Attach to Grimoire fields wrapper
 	$curGrim.data('slots', []); // Start with empty slots array
-	restoreLocal(); // Attempt to restore any saved slots
+	$curGrim.data('title', null);
+	$curGrim.data('id', grim_id); // Defined by PHP
 	
+	// Initialize
+	var $page_loader = $('p#page_loading').data('loading', true);
+	if ($curGrim.data('id') !== false) {
+		// Linked to an online ID; attempt to look it up.
+		$.ajax({
+			url: '../api/grimoire/'+$curGrim.data('id'),
+			type: 'GET',
+			dataType: 'json',
+			success: function(rs, status, xhr) {
+				$curGrim.data('title', rs.data.name);
+				$('#grim_title').html(rs.data.name).removeClass('default');
+				console.log(rs);
+				$page_loader.css('opacity', 0);
+				$curGrim.show();
+			},
+			error: function(xhr, status, err) {
+				if (err == "Not Found") {
+					// Bad ID
+					var pieces = window.location.href.split('/');
+					pieces.pop(); // Remove the ID number
+					pieces[pieces.length-1] = 'app';
+					window.location.href = pieces.join('/');
+				}
+			}
 		});
+	} else {
+		restoreLocal(); // Attempt to restore any saved slots
+		$page_loader.css('opacity', 0);
+		$curGrim.show();
+		saveRemote();
+	}
+	
 	
 	// New slot save action
 	$('input#new_slot_text').on('keydown', function(e) {
@@ -182,7 +214,10 @@ function saveLocal() {
 function restoreLocal() {
 	if (!Modernizr.localstorage) return false;
 	var title = localStorage.getItem('grimoire.title');
-	if (title != null) $('#grim_title').html(title).removeClass('default');
+	if (title != null) {
+		$('#grim_title').html(title).removeClass('default');
+		$curGrim.data('title', title);
+	}
 	
 	var data = localStorage.getItem('grimoire.slots');
 	if (data != null) {

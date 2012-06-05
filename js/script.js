@@ -112,3 +112,29 @@ function restoreLocal() {
 	}
 	return true;
 }
+
+function isOnline() {
+	if (typeof window.navigator.onLine == 'undefined') {
+		$.ajax({
+			async: false,
+			url: '/',
+			type: 'HEAD',
+			success: function(data, status, xhr) {
+				return true;
+			},
+			error: function(xhr, status, err) {
+				return false;
+			}
+		})
+	} else {
+		return window.navigator.onLine;
+	}
+}
+/*
+if (Modernizr.localstorage) {
+	// Save as a recent visit
+	var recent = JSON.parse(localStorage.getItem('grimoire.recent'));
+	recent.unshift($curGrim.data('id')); // Add this ID to the beginning of the list
+	localStorage.setItem('grimoire.recent', JSON.stringify(recent));
+}
+*/

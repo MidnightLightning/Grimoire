@@ -13,7 +13,7 @@ $(document).ready(function() {
 			// Tab or enter pressed
 			e.preventDefault(); // Stay in this field
 			var $new = $(this);
-			newSlot($new.val());
+			addSlot($new.val());
 			
 			saveLocal();
 			$new.val(''); // Clear input

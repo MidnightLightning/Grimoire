@@ -64,8 +64,8 @@ $(document).ready(function() {
 		$input.val(text);
 		$li.html('').append($input);
 		$input.select();
-	}).on('keydown', 'ul#grim_slots li input.slot_update', function(e) {
-		if (e.which == 9 || e.which == 13) {
+	}).on('keydown blur', 'ul#grim_slots li input.slot_update', function(e) {
+		if (e.which == 9 || e.which == 13 || e.type == 'focusout') {
 			e.preventDefault();
 			var $li = $(this).parent();
 			var slots = $curGrim.data('slots');
@@ -89,8 +89,8 @@ $(document).ready(function() {
 		$input.select();
 	});
 	
-	$(document).on('keydown', 'input#title_update', function(e) {
-		if (e.which == 9 || e.which == 13) {
+	$(document).on('keydown blur', 'input#title_update', function(e) {
+		if (e.which == 9 || e.which == 13 || e.type == 'focusout') {
 			e.preventDefault();
 			var $title = $(this).parent();
 			var newTitle = $title.find('input#title_update').val();

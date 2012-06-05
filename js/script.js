@@ -176,6 +176,7 @@ function saveLocal() {
 	if (!Modernizr.localstorage) return false;
 	localStorage.setItem('grimoire.slots', JSON.stringify($curGrim.data('slots')));
 	localStorage.setItem('grimoire.title', $curGrim.data('title'));
+	localStorage.setItem('grimoire.id', $curGrim.data('id'));
 }
 
 function restoreLocal() {
@@ -189,6 +190,11 @@ function restoreLocal() {
 		for (i in data) {
 			addSlot(data[i].name);
 		}
+	}
+	
+	var id = localStorage.getItem('grimoire.id');
+	if (id != null) {
+		$curGrim.data('id', id);
 	}
 	return true;
 }

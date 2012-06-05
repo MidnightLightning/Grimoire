@@ -80,7 +80,7 @@ function addSlot(name) {
 	var $li = $('<li />'); // Build a new slot item
 	var slot = {'name':name };
 	var curSlots = $curGrim.data('slots');
-	curSlots.unshift(slot); // Add new slot
+	curSlots.push(slot); // Add new slot
 	
 	$li.attr('id', 'slot-'+(curSlots.length-1));
 	$li.data('slot_number', (curSlots.length-1));

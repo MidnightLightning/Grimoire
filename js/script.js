@@ -18,7 +18,7 @@ $(document).ready(function() {
 				$curGrim.data('title', rs.data.name);
 				$('#grim_title').html(rs.data.name).removeClass('default');
 				console.log(rs);
-				$page_loader.css('opacity', 0);
+				$page_loader.hide();
 				$curGrim.show();
 			},
 			error: function(xhr, status, err) {
@@ -35,7 +35,7 @@ $(document).ready(function() {
 		});
 	} else {
 		restoreLocal(); // Attempt to restore any saved slots
-		$page_loader.css('opacity', 0);
+		$page_loader.hide();
 		$curGrim.show();
 		saveRemote();
 	}

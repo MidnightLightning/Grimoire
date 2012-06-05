@@ -32,7 +32,6 @@ class grim_obj extends crud {
 				$stmt->execute();
 				$out->data->rows = array();
 				while ($data = $stmt->fetchColumn(0)) {
-					print_r($data);
 					$out->data->rows[] = json_decode($data);
 				}
 				return $out;

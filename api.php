@@ -19,7 +19,19 @@ $api->before(function (Request $req) {
 
 // API root
 $api->get('/api/', function() {
-	return '<h1>Hello World</h1>';
+	$out = '<h1>Grimoire REST API access</h1>';
+	$out .= '<p>As a REST API, the standard CRUD (Create, Read, Update, Delete) actions are determined by request method upon the locations below.</p>';
+	$out .= '<ul><li>Create &rArr; POST</li>';
+	$out .= '<li>Read &rArr; GET</li>';
+	$out .= '<li>Update &rArr; PUT</li>';
+	$out .= '<li>Delete &rArr; DELETE</li>';
+	$out .= '</ul>';
+	$out .= '<h2>Locations:</h2>';
+	$out .= '<ul><li><tt>auth/{id}</tt>: Verify if <tt>{id}</tt> is a valid administrative (write-access) ID</li>';
+	$out .= '<li><tt>grimoire/{id}</tt>: Act upon grimoire with an ID of <tt>{id}</tt></li>';
+	$out .= '<li><tt>row/{id}</tt>: Act up on grimoire row <tt>{id}</tt></li>';
+	$out .= '</ul>';
+	return $out;
 });
 
 $api->get('/api/auth/{id}', function($id) use ($api) {

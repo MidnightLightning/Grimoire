@@ -48,7 +48,7 @@ abstract class CRUD implements Silex\ControllerProviderInterface {
 	protected function error_out($msg, $err_no = self::ERR_INTERNAL_ERROR) {
 		$out = new CrudResponse();
 		$out->error = $msg;
-		$out->erro_no = $err_no;
+		$out->err_no = $err_no;
 		return $this->app->json($out, $err_no);
 	}
 	
@@ -96,10 +96,10 @@ class Grimoires extends CRUD {
 
 		$out = new CrudResponse();
 		
-		$stmt = $db->prepare('SELECT * FROM `'.$this->table.'` WHERE `public_key`=?');
+		$stmt = $db->prepare('SELECT * FROM `'.$this->table.'` WHERE `public_key`=? LIMIT 1');
 		$stmt->execute(array($id));
 		$data = $stmt->fetch(PDO::FETCH_OBJ);
-		if (!$data) $this->error_out('No such records as '.$id, self::ERR_NOT_FOUND);
+		if (!$data) return $this->error_out('No such record as '.$id, self::ERR_NOT_FOUND);
 		$out->data = $data;
 		
 		// Get all of the rows for this grimoire
@@ -107,7 +107,7 @@ class Grimoires extends CRUD {
 		$stmt->bindValue(':gid', $id);
 		$stmt->execute();
 		$out->data->rows = array();
-		while ($row = $stmt->fetchRow()) {
+		while ($row = $stmt->fetch()) {
 			$out->data->rows[$row['id']] = json_decode($row['data']); // Data is JSON-serialized in database. De-serialize it, since it will get re-serialized as part of the output
 		}
 
@@ -189,14 +189,14 @@ class Grimoires extends CRUD {
 	}
 
 }
-$api->mount('/api/grim', new Grimoires());
+$api->mount('/api/grimoire', new Grimoires());
 
 class Rows extends CRUD {
 	public $table = 'row';
 	
 	function create(Request $req) {
 		// Validate
-		if (!$req->request->has('gid') || empty($req->request->get('gid'))) return $this->error_out('No Grimoire ID given', self::ERR_BAD_REQUEST);
+		if (!$req->request->has('gid') || $req->request->get('gid') == '') return $this->error_out('No Grimoire ID given', self::ERR_BAD_REQUEST);
 		if (!$req->request->has('order') || $req->request->get('order') == '') return $this->error_out('No Row ID given', self::ERR_BAD_REQUEST);
 		
 		// Authorize
@@ -208,7 +208,7 @@ class Rows extends CRUD {
 		$db = $app['db']; // PDO object
 		$gid = substr($gid, 0, 8); // Trim off Admin key
 		
-		$stmt = $db->prepare('INSERT INTO `'.$this->table'` (`gid`, `order`, `data`) VALUES (:gid, :order, :data)');
+		$stmt = $db->prepare('INSERT INTO `'.$this->table.'` (`gid`, `order`, `data`) VALUES (:gid, :order, :data)');
 		$stmt->bindValue(':gid', $gid);
 		$stmt->bindValue(':order', $req->request->get('order'));
 		$stmt->bindValue(':data', $req->request->get('data'));
@@ -226,7 +226,7 @@ class Rows extends CRUD {
 		$app = $this->app; // Silex\Application
 		$db = $app['db']; // PDO object
 		
-		$stmt = $db->prepare('SELECT * FROM `'.$this->table'` WHERE `id`=? LIMIT 1');
+		$stmt = $db->prepare('SELECT * FROM `'.$this->table.'` WHERE `id`=? LIMIT 1');
 		$stmt->execute(array($id));
 		if ($stmt->rowCount() < 1) return $this->error_out('No such row', self::ERR_NOT_FOUND);
 		
@@ -239,7 +239,7 @@ class Rows extends CRUD {
 
 	function update($id, Request $req) {
 		// Validate
-		if (!$req->request->has('gid') || empty($req->request->get('gid'))) return $this->error_out('No Grimoire ID given', self::ERR_BAD_REQUEST);
+		if (!$req->request->has('gid') || $req->request->get('gid') == '') return $this->error_out('No Grimoire ID given', self::ERR_BAD_REQUEST);
 		if (!$req->request->has('order') || $req->request->get('order') == '') return $this->error_out('No Row ID given', self::ERR_BAD_REQUEST);
 		
 		// Authorize
@@ -258,7 +258,7 @@ class Rows extends CRUD {
 		
 
 		// Execute
-		$stmt = $db->prepare('UPDATE `'.$this->table'` `order`=:order, `data`=:data WHERE `id`=:id LIMIT 1');
+		$stmt = $db->prepare('UPDATE `'.$this->table.'` `order`=:order, `data`=:data WHERE `id`=:id LIMIT 1');
 		$stmt->bindValue(':order', $req->request->get('order'));
 		$stmt->bindValue(':data', $req->request->get('data'));
 		$stmt->bindValue(':id', $id);
@@ -288,7 +288,7 @@ class Rows extends CRUD {
 		
 
 		// Execute
-		$stmt = $db->prepare('DELETE FROM `'.$this->table'` WHERE `id`=?');
+		$stmt = $db->prepare('DELETE FROM `'.$this->table.'` WHERE `id`=?');
 		$stmt->execute(array($id));
 		if ($stmt->rowCount() < 1) return $this->error_out('SQL Failed delete: '.var_export($stmt->errorInfo(), true), self::ERR_INTERNAL_ERROR);
 		

@@ -22,6 +22,33 @@ $api->get('/api/', function() {
 	return '<h1>Hello World</h1>';
 });
 
+$api->get('/api/auth/{id}', function($id) use ($api) {
+	$out = new CrudResponse();
+
+	if (strlen($id) < 24) {
+		$out->err_no = CRUD::ERR_UNAUTHORIZED;
+		$out->err = 'Not Authorized';
+		return $api->json($out, 200);
+	}
+
+	$public = substr($id, 0, 8);
+	$admin = substr($id, 8, 16);
+	$db = $api['db']; // PDO object
+	
+	$stmt = $db->prepare('SELECT `public_key` FROM `grimoire` WHERE `public_key`=:pid AND `admin_key`=:aid');
+	$stmt->bindValue(':pid', $public);
+	$stmt->bindValue(':aid', $admin);
+	$stmt->execute();
+	if ($stmt->rowCount() < 1) {
+		// Bad public/private combo
+		$out->err_no = CRUD::ERR_UNAUTHORIZED;
+		$out->err = 'Not Authorized';
+		return $api->json($out, 200);
+	}
+	
+	$out->err = 'Authorized';
+	return $api->json($out, 200, array('GRIMOIRE-WRITE-ACCESS' => 'true'));
+});
 
 abstract class CRUD implements Silex\ControllerProviderInterface {
 	const ERR_OK = 200;
@@ -92,6 +119,7 @@ class Grimoires extends CRUD {
 	function read($id) {
 		$app = $this->app; // Silex\Application
 		$db = $app['db']; // PDO object
+		$authorized = $this->_is_authorized($id); // The full key is not needed, but was it provided?
 		if (strlen($id) > 8) $id = substr($id, 0, 8); // Trim off Admin key, if any
 
 		$out = new CrudResponse();
@@ -110,8 +138,8 @@ class Grimoires extends CRUD {
 		while ($row = $stmt->fetch()) {
 			$out->data->rows[$row['id']] = json_decode($row['data']); // Data is JSON-serialized in database. De-serialize it, since it will get re-serialized as part of the output
 		}
-
-		return $app->json($out, self::ERR_OK);
+		
+		return $app->json($out, self::ERR_OK, ($authorized)? array('GRIMOIRE-WRITE-ACCESS' => 'true') : array());
 	}
 
 	function update($id, Request $req) {

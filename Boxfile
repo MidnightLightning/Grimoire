@@ -5,6 +5,7 @@ web1:
     - "mv .htaccess.pg .htaccess"
     - "mv lib/db.pg.php lib/db.php"
     - "mv config.pg.php config.php"
+    - "if [ ! -f composer.phar ]; then curl -s http://getcomposer.org/installer | php; fi; php composer.phar install"
 
 db1:
   name: icebox

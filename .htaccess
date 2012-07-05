@@ -1,7 +1,11 @@
 <IfModule mod_rewrite.c>
 	RewriteEngine	on
-	RewriteBase /test/grimoire
-
+	RewriteBase /personal/grimoire
+	
+	# REST API
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteRule ^api/?	api.php [L]
+	
 	RewriteRule ^g/?$                      app.php [L]
 	RewriteRule ^g/([a-zA-Z0-9]+)/?$       app.php?id=$1 [L]
 	RewriteRule ^api/grimoire/(.*)$        api/grimoire.php/$1 [QSA,L]

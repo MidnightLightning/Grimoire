@@ -1,5 +1,5 @@
 {
-    "hash": "6ee6b99e9b8b61246dfc131110c48da5",
+    "hash": "75000909d13b984ee25ad829c8a134ff",
     "packages": [
         {
             "package": "pimple/pimple",
@@ -16,8 +16,14 @@
         {
             "package": "silex/silex",
             "version": "dev-master",
-            "source-reference": "75ad4dee844c7f42656f369ff436c0960c77c175",
-            "commit-date": "1341418190"
+            "alias-pretty-version": "1.0.x-dev",
+            "alias-version": "1.0.9999999.9999999-dev"
+        },
+        {
+            "package": "silex/silex",
+            "version": "dev-master",
+            "source-reference": "f1563f21d34fb7346484dfd10103abb1beef684f",
+            "commit-date": "1341513365"
         },
         {
             "package": "symfony/event-dispatcher",
@@ -66,12 +72,6 @@
             "version": "dev-master",
             "source-reference": "622a168a3be54a87e34ad65e9d50a738fb89ff7e",
             "commit-date": "1341312726"
-        },
-        {
-            "package": "twig/twig",
-            "version": "dev-master",
-            "source-reference": "26eb0a2653eade50dffdd31b11ca454232dea8cf",
-            "commit-date": "1341423205"
         }
     ],
     "packages-dev": null,

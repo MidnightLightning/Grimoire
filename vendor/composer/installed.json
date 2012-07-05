@@ -3,7 +3,7 @@
         "name": "pimple/pimple",
         "version": "dev-master",
         "version_normalized": "9999999-dev",
-        "time": "2012-07-01 20:38:20",
+        "time": "2012-07-02 01:38:20",
         "source": {
             "type": "git",
             "url": "git://github.com/fabpot/Pimple.git",
@@ -53,7 +53,7 @@
         "version": "dev-master",
         "version_normalized": "9999999-dev",
         "target-dir": "Symfony/Component/Routing",
-        "time": "2012-07-03 20:52:06",
+        "time": "2012-07-04 01:52:06",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/Routing",
@@ -116,7 +116,7 @@
         "version": "dev-master",
         "version_normalized": "9999999-dev",
         "target-dir": "Symfony/Component/HttpFoundation",
-        "time": "2012-07-04 15:27:44",
+        "time": "2012-07-04 20:27:44",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/HttpFoundation",
@@ -169,7 +169,7 @@
         "version": "dev-master",
         "version_normalized": "9999999-dev",
         "target-dir": "Symfony/Component/EventDispatcher",
-        "time": "2012-05-26 17:48:33",
+        "time": "2012-05-26 22:48:33",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/EventDispatcher",
@@ -228,7 +228,7 @@
         "version": "dev-master",
         "version_normalized": "9999999-dev",
         "target-dir": "Symfony/Component/HttpKernel",
-        "time": "2012-07-04 02:15:20",
+        "time": "2012-07-04 07:15:20",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/HttpKernel",
@@ -299,16 +299,16 @@
         "name": "silex/silex",
         "version": "dev-master",
         "version_normalized": "9999999-dev",
-        "time": "2012-07-05 02:09:50",
+        "time": "2012-07-05 18:36:05",
         "source": {
             "type": "git",
             "url": "git://github.com/fabpot/Silex.git",
-            "reference": "75ad4dee844c7f42656f369ff436c0960c77c175"
+            "reference": "f1563f21d34fb7346484dfd10103abb1beef684f"
         },
         "dist": {
             "type": "zip",
-            "url": "https://github.com/fabpot/Silex/zipball/75ad4dee844c7f42656f369ff436c0960c77c175",
-            "reference": "75ad4dee844c7f42656f369ff436c0960c77c175",
+            "url": "https://github.com/fabpot/Silex/zipball/f1563f21d34fb7346484dfd10103abb1beef684f",
+            "reference": "f1563f21d34fb7346484dfd10103abb1beef684f",
             "shasum": ""
         },
         "require": {
@@ -374,60 +374,6 @@
         "autoload": {
             "psr-0": {
                 "Silex": "src/"
-            }
-        }
-    },
-    {
-        "name": "twig/twig",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
-        "time": "2012-07-04 22:33:25",
-        "source": {
-            "type": "git",
-            "url": "git://github.com/fabpot/Twig.git",
-            "reference": "26eb0a2653eade50dffdd31b11ca454232dea8cf"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://github.com/fabpot/Twig/zipball/26eb0a2653eade50dffdd31b11ca454232dea8cf",
-            "reference": "26eb0a2653eade50dffdd31b11ca454232dea8cf",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.2.4"
-        },
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "1.9-dev"
-            }
-        },
-        "installation-source": "source",
-        "license": [
-            "BSD-3"
-        ],
-        "authors": [
-            {
-                "name": "Fabien Potencier",
-                "email": "fabien@symfony.com",
-                "homepage": null,
-                "role": null
-            },
-            {
-                "name": "Armin Ronacher",
-                "email": "armin.ronacher@active-4.com",
-                "homepage": null,
-                "role": null
-            }
-        ],
-        "description": "Twig, the flexible, fast, and secure template language for PHP",
-        "homepage": "http://twig.sensiolabs.org",
-        "keywords": [
-            "templating"
-        ],
-        "autoload": {
-            "psr-0": {
-                "Twig_": "lib/"
             }
         }
     }

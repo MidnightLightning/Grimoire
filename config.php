@@ -1,3 +1,3 @@
 <?php
 // Dev MAMP config
-$doc_root = '/test/grimoire/';
+$doc_root = '/personal/grimoire/';

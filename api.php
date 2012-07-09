@@ -195,7 +195,7 @@ class Grimoires extends CRUD {
 		$app = $this->app; // Silex\Application
 		$db = $app['db']; // PDO object
 		
-		$stmt = $db->prepare('SELECT `public_id` FROM `'.$this->table.'` WHERE `public_key`=:pid AND `admin_key`=:aid');
+		$stmt = $db->prepare('SELECT `public_key` FROM `'.$this->table.'` WHERE `public_key`=:pid AND `admin_key`=:aid');
 		$stmt->bindValue(':pid', $public);
 		$stmt->bindValue(':aid', $admin);
 		$stmt->execute();

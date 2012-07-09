@@ -140,18 +140,19 @@ class Grimoires extends CRUD {
 		$stmt->execute(array($id));
 		$data = $stmt->fetch(PDO::FETCH_OBJ);
 		if (!$data) return $this->error_out('No such record as '.$id, self::ERR_NOT_FOUND);
-		$out->data = $data;
 		
 		// Get all of the rows for this grimoire
 		$stmt = $db->prepare('SELECT `id`, `data` FROM `row` WHERE `gid`=:gid ORDER BY `order`');
 		$stmt->bindValue(':gid', $id);
 		$stmt->execute();
-		$out->data->rows = array();
+		$data->rows = array();
 		while ($row = $stmt->fetch()) {
-			$out->data->rows[$row['id']] = json_decode($row['data']); // Data is JSON-serialized in database. De-serialize it, since it will get re-serialized as part of the output
+			$row_data = json_decode($row['data']); // Data is JSON-serialized in database. De-serialize it, since it will get re-serialized as part of the output
+			$row_data->id = $row['id'];
+			$data->rows[] = $row_data;
 		}
 		
-		return $app->json($out, self::ERR_OK, ($authorized)? array('GRIMOIRE-WRITE-ACCESS' => 'true') : array());
+		return $app->json($data, self::ERR_OK, ($authorized)? array('GRIMOIRE-WRITE-ACCESS' => 'true') : array());
 	}
 
 	function update($id, Request $req) {

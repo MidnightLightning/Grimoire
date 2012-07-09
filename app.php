@@ -22,15 +22,7 @@ require_once('config.php');
 	<link rel="apple-touch-icon" sizes="114x114" href="<?= $doc_root ?>img/apple-touch-icon-114x114.png" />
 	<script src="<?= $doc_root ?>js/modernizr-2.5.3.min.js"></script>
 	<script>
-<?php
-	echo "\tvar doc_root = '{$doc_root}';\n";
-	if (isset($_GET['id'])) {
-		// Pass the Grimoire ID along to Javascript
-		echo "\tvar grim_id = '{$_GET['id']}';\n";
-	} else {
-		echo "\tvar grim_id = false;\n";
-	}
-?>
+		var doc_root = '<?= $doc_root ?>';
 	</script>
 </head>
 <body>

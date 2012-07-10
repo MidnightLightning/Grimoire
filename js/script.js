@@ -34,25 +34,48 @@ var GrimoireTitle = Backbone.View.extend({
 	render: function() {
 		var name = this.model.get('name');
 		if (name != '' || name == this.model.defaults.name) {
-			this.$el.html(this.model.get('name')).removeClass('default');
+			this.$el.html('<span class="name">'+this.model.get('name')+'</span>').removeClass('default');
 		} else {
-			this.$el.html(this.model.defaults.name).addClass('default');
+			this.$el.html('<span class="name">'+this.model.defaults.name+'</span>').addClass('default');
 		}
 		return this; // Chain
 	},
+	events: {
+		'dblclick .name': 'edit',
+		'blur .title_update': 'endEdit',
+		'keydown .title_update': 'keyEvent'
+	},
 	initialize: function() {
 		this.model.on('change:name', this.render, this);
+	},
+	edit: function() {
+		if (!cur_grim.writeAccess) return false;
+		$input = this.make('input', {'type':'text', 'class':'title_update', 'value':this.model.get('name')});
+		this.$el.html($input);
+		$input.select();
+	},
+	endEdit: function(e) {
+		this.model.set({'name': this.$el.find('input.title_update').val()}); // Save new name
+		this.render(); // Reset to default view
+	},
+	keyEvent: function(e) {
+		if (e.which == 13) {
+			// Enter key was pressed
+			this.endEdit();
+		}
 	}
 });
 
 var GrimoireRowsView = Backbone.View.extend({
 	tagName: 'ul',
 	initialize: function() {
-		this.model.on('change:rows', this.render, this);
+		this.model.on('reset', this.render, this);
 	},
 	render: function() {
 		this.model.get('rows').each(function (e, i) {
+		this.$el.html(); // Clear existing
 			this.$el.append(new GrimoireRowView({model:e}).render().el);
+			e.on('change', function(model) { model.save(); });
 		}, this);
 		return this; // Chain
 	}
@@ -64,8 +87,9 @@ var GrimoireRowView = Backbone.View.extend({
 		return this; // Chain
 	},
 	events: {
-		'click .name': 'edit',
-		'blur .slot_update': 'endEdit'
+		'dblclick .name': 'edit',
+		'blur .slot_update': 'endEdit',
+		'keydown .slot_update': 'keyEvent'
 	},
 	edit: function() {
 		if (!cur_grim.get('writeAccess')) return false;
@@ -76,6 +100,12 @@ var GrimoireRowView = Backbone.View.extend({
 	endEdit: function(e) {
 		this.model.set({'name': this.$el.find('input.slot_update').val()}); // Save new name
 		this.render(); // Reset to default view
+	},
+	keyEvent: function(e) {
+		if (e.which == 13) {
+			// Enter key was pressed
+			this.endEdit();
+		}
 	}
 })
 

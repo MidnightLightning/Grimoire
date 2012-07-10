@@ -157,7 +157,7 @@ class Grimoires extends CRUD {
 	}
 
 	function update($id, Request $req) {
-		if (!$this->is_authorized($id)) return $this->error_out('Not Authorized', self::ERR_UNAUTHORIZED);
+		if (!$this->_is_authorized($id)) return $this->error_out('Not Authorized', self::ERR_UNAUTHORIZED);
 		$app = $this->app; // Silex\Application
 		$db = $app['db']; // PDO object
 		$id = substr($id, 0, 8); // Trim off Admin key
@@ -174,7 +174,7 @@ class Grimoires extends CRUD {
 	}
 
 	function delete($id) {
-		if (!$this->is_authorized($id)) return $this->error_out('Not Authorized', self::ERR_UNAUTHORIZED);
+		if (!$this->_is_authorized($id)) return $this->error_out('Not Authorized', self::ERR_UNAUTHORIZED);
 		$app = $this->app; // Silex\Application
 		$db = $app['db']; // PDO object
 		$id = substr($id, 0, 8); // Trim off Admin key
@@ -243,7 +243,7 @@ class Rows extends CRUD {
 		
 		// Authorize
 		$gid = $req->request->get('gid');
-		if (!$this->is_authorized($gid)) return $this->error_out('Not Authorized', self::ERR_UNAUTHORIZED);
+		if (!$this->_is_authorized($gid)) return $this->error_out('Not Authorized', self::ERR_UNAUTHORIZED);
 
 		// Execute
 		$app = $this->app; // Silex\Application
@@ -281,12 +281,12 @@ class Rows extends CRUD {
 
 	function update($id, Request $req) {
 		// Validate
-		if (!$req->request->has('gid') || $req->request->get('gid') == '') return $this->error_out('No Grimoire ID given', self::ERR_BAD_REQUEST);
-		if (!$req->request->has('order') || $req->request->get('order') == '') return $this->error_out('No Row ID given', self::ERR_BAD_REQUEST);
+		if (!$req->request->has('gid') || $req->request->get('gid') === '') return $this->error_out('No Grimoire ID given', self::ERR_BAD_REQUEST);
+		if (!$req->request->has('order') || $req->request->get('order') === '') return $this->error_out('No Row ID given', self::ERR_BAD_REQUEST);
 		
 		// Authorize
 		$gid = $req->request->get('gid');
-		if (!$this->is_authorized($gid)) return $this->error_out('Not Authorized', self::ERR_UNAUTHORIZED);
+		if (!$this->_is_authorized($gid)) return $this->error_out('Not Authorized', self::ERR_UNAUTHORIZED);
 		
 		$gid = substr($gid, 0, 8); // Trim off Admin key
 		$app = $this->app; // Silex\Application
@@ -316,7 +316,7 @@ class Rows extends CRUD {
 	function delete($id) {
 		// Authorize
 		$gid = $req->request->get('gid');
-		if (!$this->is_authorized($gid)) return $this->error_out('Not Authorized', self::ERR_UNAUTHORIZED);
+		if (!$this->_is_authorized($gid)) return $this->error_out('Not Authorized', self::ERR_UNAUTHORIZED);
 		
 		$gid = substr($gid, 0, 8); // Trim off Admin key
 		$app = $this->app; // Silex\Application

@@ -162,14 +162,19 @@ class Grimoires extends CRUD {
 		$db = $app['db']; // PDO object
 		$id = substr($id, 0, 8); // Trim off Admin key
 		
+		// Get existing
+		$stmt = $db->prepare('SELECT `name` FROM `'.$this->table.'` WHERE `public_key`=?');
+		$stmt->execute(array($id));
+		$existing = $stmt->fetch(PDO::FETCH_OBJ);
+		$out = new stdClass;
+		if ($existing->name != $req->request->get('name')) { $out->name = $req->request->get('name'); }
+		
 		$stmt = $db->prepare('UPDATE `'.$this->table.'` SET `name`=:name WHERE `public_key`=:gid');
 		$stmt->bindValue(':name', $req->request->get('name'));
 		$stmt->bindValue(':gid', $id);
 		$stmt->execute();
 		if ($stmt->rowCount() < 1) return $this->error_out('SQL Failed update: '.var_export($stmt->errorInfo(), true), self::ERR_INTERNAL_ERROR);
 		
-		$out = new CrudResponse();
-		$out->id = $id;
 		return $app->json($out, self::ERR_OK);
 	}
 
@@ -298,18 +303,30 @@ class Rows extends CRUD {
 		$stmt->execute();
 		if ($stmt->rowCount() < 1) return $this->error_out('Not Authorized', self::ERR_UNAUTHORIZED); // That row does not belong to that Grimoire
 		
+		// Get existing
+		$stmt = $db->prepare('SELECT `order`, `data` FROM `'.$this->table.'` WHERE `id`=?');
+		$stmt->execute(array($id));
+		$data = $stmt->fetch();
+		$existing = json_decode($data['data']);
+		$existing->order = $data['order'];
+		$out = new stdClass;
+		if ($existing->order != $req->request->get('order')) { $out->order = $req->request->get('order'); }
 
 		// Execute
-		$stmt = $db->prepare('UPDATE `'.$this->table.'` `order`=:order, `data`=:data WHERE `id`=:id LIMIT 1');
+		$data = new stdClass;
+		foreach($req->request->keys() as $key) {
+			if (!in_array($key, array('id', 'gid', 'order'))) {
+				$data->$key = $req->request->get($key);
+				if ($existing->$key != $req->request->get($key)) { $out->$key = $req->request->get($key); }
+			}
+		}
+		$stmt = $db->prepare('UPDATE `'.$this->table.'` SET `order`=:order, `data`=:data WHERE `id`=:id LIMIT 1');
 		$stmt->bindValue(':order', $req->request->get('order'));
-		$stmt->bindValue(':data', $req->request->get('data'));
+		$stmt->bindValue(':data', json_encode($data));
 		$stmt->bindValue(':id', $id);
 		$stmt->execute();
 		if ($stmt->rowCount() < 1) return $this->error_out('SQL Failed udpate: '.var_export($stmt->errorInfo(), true), self::ERR_INTERNAL_ERROR);
 		
-		$out = new CrudResponse();
-		$out->id = $id;
-
 		return $app->json($out, self::ERR_OK);
 	}
 

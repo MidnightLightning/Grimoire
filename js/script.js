@@ -2,7 +2,13 @@ var GrimoireRow = Backbone.Model.extend({
 	urlRoot: 'api/row'
 });
 var GrimoireRows = Backbone.Collection.extend({
-	model: GrimoireRow
+	model: GrimoireRow,
+	addMeta: function() {
+		var gid = cur_grim.model.myKey();
+		this.each(function(e, i) {
+			e.set({'order':i, 'gid':gid}, {silent:true});
+		});
+	}
 });
 var Grimoire = Backbone.Model.extend({
 	defaults: {
@@ -132,10 +138,7 @@ $(document).ready(function() {
 		var $xhr = cur_grim.model.fetch({
 			success: function(model, response) {
 				// This is a valid Grimoire
-				cur_grim.rows.reset(response.rows); // Save the row collection
-				cur_grim.rows.each(function(e, i) {
-					e.set({'order':i, 'gid':cur_grim.model.myKey()}, {silent:true});
-				});
+				cur_grim.rows.reset(response.rows).addMeta(); // Save the row collection
 				
 				$page_loader.hide();
 				$curGrim.show();

@@ -1,5 +1,5 @@
 var GrimoireRow = Backbone.Model.extend({
-	urlRoot: 'api/row'
+	urlRoot: 'api/row/'
 });
 var GrimoireRows = Backbone.Collection.extend({
 	model: GrimoireRow,
@@ -15,9 +15,9 @@ var Grimoire = Backbone.Model.extend({
 		'name':'New Grimoire'
 	},
 	idAttribute: "public_key",
-	urlRoot: 'api/grimoire',
+	urlRoot: 'api/grimoire/',
 	url: function() {
-		return this.urlRoot+'/'+this.myKey();
+		return this.urlRoot+this.myKey();
 	},
 	parse: function(response) {
 		var response = _.clone(response);

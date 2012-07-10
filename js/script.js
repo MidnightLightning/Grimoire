@@ -73,6 +73,12 @@ var GrimoireRowsView = Backbone.View.extend({
 	tagName: 'ul',
 	initialize: function() {
 		this.model.on('reset', this.render, this);
+		this.model.on('add', function(e, m) {
+			m.addMeta();
+			m.last().save();
+			this.$el.append(new GrimoireRowView({model: m.last()}).render().el);
+			m.last().on('change', function(model) { model.save(); });
+		}, this);
 	},
 	render: function() {
 		this.$el.html(); // Clear existing
@@ -153,7 +159,21 @@ $(document).ready(function() {
 		// Work on a local Grimoire
 		$page_loader.hide();
 		$curGrim.show();
+		cur_grim.writeAccess = true;
 	}
+	
+	// New slot save action
+	$('input#new_slot_text').on('keydown', function(e) {
+		if (e.which == 9 || e.which == 13) {
+			// Tab or enter pressed
+			e.preventDefault(); // Stay in this field
+			var $new = $(this);
+			addSlot($new.val());
+			
+			$new.val(''); // Clear input
+		}
+	});
+	
 });
 
 function parseWriteHeader($xhr) {
@@ -164,6 +184,8 @@ function parseWriteHeader($xhr) {
 	}
 }
 
+function addSlot(name) {
+	cur_grim.rows.add({'name': name});
 }
 
 /*

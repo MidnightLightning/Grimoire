@@ -254,19 +254,22 @@ class Rows extends CRUD {
 		$app = $this->app; // Silex\Application
 		$db = $app['db']; // PDO object
 		$gid = substr($gid, 0, 8); // Trim off Admin key
+
+		$data = new stdClass;
+		foreach($req->request->keys() as $key) {
+			if (!in_array($key, array('id', 'gid', 'order'))) {
+				$data->$key = $req->request->get($key);
+			}
+		}
 		
 		$stmt = $db->prepare('INSERT INTO `'.$this->table.'` (`gid`, `order`, `data`) VALUES (:gid, :order, :data)');
 		$stmt->bindValue(':gid', $gid);
 		$stmt->bindValue(':order', $req->request->get('order'));
-		$stmt->bindValue(':data', $req->request->get('data'));
+		$stmt->bindValue(':data', json_encode($data));
 		$stmt->execute();
 		if ($stmt->rowCount() < 1) return $this->error_out('SQL Failed insert: '.var_export($stmt->errorInfo(), true), self::ERR_INTERNAL_ERROR);
 		
-		$out = new CrudResponse();
-		$out->id = $db->lastInsertId();
-		$out->err_no = self::ERR_CREATED;
-
-		return $app->json($out, self::ERR_CREATED);
+		return $app->json(new stdClass, self::ERR_CREATED);
 	}
 
 	function read($id) {
@@ -317,7 +320,7 @@ class Rows extends CRUD {
 		foreach($req->request->keys() as $key) {
 			if (!in_array($key, array('id', 'gid', 'order'))) {
 				$data->$key = $req->request->get($key);
-				if ($existing->$key != $req->request->get($key)) { $out->$key = $req->request->get($key); }
+				if (isset($existing->$key) && $existing->$key != $req->request->get($key)) { $out->$key = $req->request->get($key); }
 			}
 		}
 		$stmt = $db->prepare('UPDATE `'.$this->table.'` SET `order`=:order, `data`=:data WHERE `id`=:id LIMIT 1');

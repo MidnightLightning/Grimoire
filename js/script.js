@@ -10,23 +10,20 @@ var Grimoire = Backbone.Model.extend({
 	},
 	idAttribute: "public_key",
 	urlRoot: 'api/grimoire',
+	url: function() {
+		return this.urlRoot+'/'+this.myKey();
+	},
 	parse: function(response) {
-		var row_models = [];
-		_.each(response.rows, function(e, i) {
-			row_models.push(new GrimoireRow(e));
-		});
-		response.rows = new GrimoireRows(row_models);
+		var response = _.clone(response);
+		response.rows = undefined;
 		return response;
 	},
-	toJSON: function() {
-		var atts = _.clone(this.attributes);
-		var rows = [];
-		this.get('rows').each(function (e, i) {
-			rows.push(e.toJSON());
-		});
-		atts.rows = rows;
-		atts.writeAccess = undefined; // Unset writable flag
-		return atts;
+	myKey: function() {
+		var key = this.get('public_key');
+		if (typeof this.get('admin_key') != 'undefined') {
+			key += this.get('admin_key');
+		}
+		return key;
 	}
 });
 
@@ -72,8 +69,8 @@ var GrimoireRowsView = Backbone.View.extend({
 		this.model.on('reset', this.render, this);
 	},
 	render: function() {
-		this.model.get('rows').each(function (e, i) {
 		this.$el.html(); // Clear existing
+		this.model.each(function (e, i) {
 			this.$el.append(new GrimoireRowView({model:e}).render().el);
 			e.on('change', function(model) { model.save(); });
 		}, this);
@@ -92,7 +89,7 @@ var GrimoireRowView = Backbone.View.extend({
 		'keydown .slot_update': 'keyEvent'
 	},
 	edit: function() {
-		if (!cur_grim.get('writeAccess')) return false;
+		if (!cur_grim.writeAccess) return false;
 		$input = this.make('input', {'type':'text', 'class':'slot_update', 'value':this.model.get('name')});
 		this.$el.html($input);
 		$input.select();
@@ -112,26 +109,40 @@ var GrimoireRowView = Backbone.View.extend({
 $(document).ready(function() {
 	var $page_loader = $('p#page_loading');
 	var $curGrim = $('div#grim_display'); // Attach to Grimoire fields wrapper
+	window.cur_grim = {}; // Standard object for holding data
+	
 	if (window.location.hash) {
 		// See if the hash is a valid grimoire
-		window.cur_grim = new Grimoire({
+		cur_grim.model = new Grimoire({
 			public_key: window.location.hash.substring(1)
 		});
+		cur_grim.model.on('all', function(name) { console.log('cur_grim: ', name); });
+		cur_grim.rows = new GrimoireRows();
+		cur_grim.rows.on('all', function(name) { console.log('rows: ', name); });
 
 		new GrimoireTitle({
-			model: cur_grim,
+			model: cur_grim.model,
 			el: $curGrim.find('#grim_title').get(0)
 		});
 		new GrimoireRowsView({
-			model: cur_grim,
+			model: cur_grim.rows,
 			el: $curGrim.find('ul#grim_slots').get(0)
 		})
 		
-		var $xhr = cur_grim.fetch({
+		var $xhr = cur_grim.model.fetch({
 			success: function(model, response) {
 				// This is a valid Grimoire
+				cur_grim.rows.reset(response.rows); // Save the row collection
+				cur_grim.rows.each(function(e, i) {
+					e.set({'order':i, 'gid':cur_grim.model.myKey()}, {silent:true});
+				});
+				
 				$page_loader.hide();
 				$curGrim.show();
+				
+				cur_grim.model.on('change:name', function(model, newValue) {
+					model.save();
+				});
 			}
 		});
 		parseWriteHeader($xhr);
@@ -146,8 +157,7 @@ function parseWriteHeader($xhr) {
 	if ($xhr.state() == 'pending') {
 		setTimeout(function() { parseWriteHeader($xhr); }, 200); // Wait until complete
 	} else {
-		var writeAccess = ($xhr.getResponseHeader('GRIMOIRE-WRITE-ACCESS') == 'true')? true : false;
-		cur_grim.set('writeAccess', writeAccess);
+		cur_grim.writeAccess = ($xhr.getResponseHeader('GRIMOIRE-WRITE-ACCESS') == 'true')? true : false;
 	}
 }
 /*	

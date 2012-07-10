@@ -348,7 +348,7 @@ class Rows extends CRUD {
 		$app = $this->app; // Silex\Application
 		$db = $app['db']; // PDO object
 		
-		$stmt = $db->prepare('SELECT `public_id` FROM `grimoire` WHERE `public_key`=:pid AND `admin_key`=:aid');
+		$stmt = $db->prepare('SELECT `public_key` FROM `grimoire` WHERE `public_key`=:pid AND `admin_key`=:aid');
 		$stmt->bindValue(':pid', $public);
 		$stmt->bindValue(':aid', $admin);
 		$stmt->execute();

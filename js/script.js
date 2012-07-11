@@ -80,9 +80,12 @@ var GrimoireRowsView = Backbone.View.extend({
 		this.model.on('reset remove', this.render, this);
 		this.model.on('add', function(e, m) {
 			var justAdded = m.last();
-			justAdded.saveRow();
 			this.$el.append(new GrimoireRowView({model: justAdded}).render().el);
-			justAdded.on('change', function(model) { model.saveRow(); });
+			justAdded.saveRow({
+				success: function(model) {
+					model.on('change', function(model) { model.saveRow(); }); // Add this after the initial "saveRow()", to miss the "change:id" event
+				}
+			});
 		}, this);
 	},
 	render: function() {

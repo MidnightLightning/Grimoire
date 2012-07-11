@@ -81,7 +81,7 @@ var GrimoireRowsView = Backbone.View.extend({
 		}, this);
 	},
 	render: function() {
-		this.$el.html(); // Clear existing
+		this.$el.html(''); // Clear existing
 		this.model.each(function (e, i) {
 			this.$el.append(new GrimoireRowView({model:e}).render().el);
 			e.on('change', function(model) { model.save(); });

@@ -269,7 +269,9 @@ class Rows extends CRUD {
 		$stmt->execute();
 		if ($stmt->rowCount() < 1) return $this->error_out('SQL Failed insert: '.var_export($stmt->errorInfo(), true), self::ERR_INTERNAL_ERROR);
 		
-		return $app->json(new stdClass, self::ERR_CREATED);
+		$out = new stdClass;
+		$out->id = $db->lastInsertId();
+		return $app->json($out, self::ERR_CREATED);
 	}
 
 	function read($id) {

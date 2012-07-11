@@ -94,7 +94,7 @@ abstract class CRUD implements Silex\ControllerProviderInterface {
 	abstract public function create(Request $req);
 	abstract public function read($id);
 	abstract public function update($id, Request $req);
-	abstract public function delete($id);
+	abstract public function delete($id, Request $req);
 }
 
 class CrudResponse {
@@ -178,7 +178,7 @@ class Grimoires extends CRUD {
 		return $app->json($out, self::ERR_OK);
 	}
 
-	function delete($id) {
+	function delete($id, Request $req) {
 		if (!$this->_is_authorized($id)) return $this->error_out('Not Authorized', self::ERR_UNAUTHORIZED);
 		$app = $this->app; // Silex\Application
 		$db = $app['db']; // PDO object
@@ -333,7 +333,7 @@ class Rows extends CRUD {
 		return $app->json($out, self::ERR_OK);
 	}
 
-	function delete($id) {
+	function delete($id, Request $req) {
 		// Authorize
 		$gid = $req->request->get('gid');
 		if (!$this->_is_authorized($gid)) return $this->error_out('Not Authorized', self::ERR_UNAUTHORIZED);

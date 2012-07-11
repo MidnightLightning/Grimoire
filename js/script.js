@@ -72,7 +72,7 @@ var GrimoireTitle = Backbone.View.extend({
 var GrimoireRowsView = Backbone.View.extend({
 	tagName: 'ul',
 	initialize: function() {
-		this.model.on('reset', this.render, this);
+		this.model.on('reset remove', this.render, this);
 		this.model.on('add', function(e, m) {
 			m.addMeta();
 			m.last().save();
@@ -107,8 +107,18 @@ var GrimoireRowView = Backbone.View.extend({
 		$input.select();
 	},
 	endEdit: function(e) {
-		this.model.set({'name': this.$el.find('input.slot_update').val()}); // Save new name
-		this.render(); // Reset to default view
+		var newName = this.$el.find('input.slot_update').val();
+		if (newName == '') {
+			// Delete row
+			this.model.destroy({
+				data: JSON.stringify({gid: cur_grim.model.myKey()}), // Authenticate with Grimoire ID
+				contentType: 'application/json' // Backbone doesn't set this explicitly, so defaults to 'application/x-www-form-urlencoded'
+			});
+		} else {
+			// Save row
+			this.model.set({'name': newName}); // Save new name
+			this.render(); // Reset to default view
+		}
 	},
 	keyEvent: function(e) {
 		if (e.which == 13) {

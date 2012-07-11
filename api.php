@@ -330,8 +330,7 @@ class Rows extends CRUD {
 		$stmt->bindValue(':order', $req->request->get('order'));
 		$stmt->bindValue(':data', json_encode($data));
 		$stmt->bindValue(':id', $id);
-		$stmt->execute();
-		if ($stmt->rowCount() < 1) return $this->error_out('SQL Failed udpate: '.var_export($stmt->errorInfo(), true), self::ERR_INTERNAL_ERROR);
+		if (!$stmt->execute()) return $this->error_out('SQL Failed update: '.var_export($stmt->errorInfo(), true), self::ERR_INTERNAL_ERROR);
 		
 		return $app->json($out, self::ERR_OK);
 	}

@@ -1,14 +1,15 @@
 var GrimoireRow = Backbone.Model.extend({
 	urlRoot: 'api/row/',
-	saveRow: function() {
+	saveRow: function(options) {
+		options || (options = {});
 		var data = _.extend(this.toJSON(), {
 			gid: cur_grim.model.myKey(),
 			order: this.collection.indexOf(this)
 		});
-		this.save({}, {
+		this.save({}, _.extend({
 			data: JSON.stringify(data),
 			contentType: 'application/json'
-		});
+		}, options));
 	},
 });
 var GrimoireRows = Backbone.Collection.extend({

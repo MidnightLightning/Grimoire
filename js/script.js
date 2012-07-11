@@ -168,7 +168,7 @@ $(document).ready(function() {
 				$curGrim.show();
 				
 				cur_grim.model.on('change:name', function(model, newValue) {
-					model.save();
+					if (cur_grim.writeAccess) model.save();
 				});
 			}
 		});
@@ -192,6 +192,8 @@ $(document).ready(function() {
 		}
 	});
 	
+	// Heartbeat
+	setInterval(doHeartbeat, 8000);
 });
 
 function parseWriteHeader($xhr) {
@@ -199,6 +201,21 @@ function parseWriteHeader($xhr) {
 		setTimeout(function() { parseWriteHeader($xhr); }, 200); // Wait until complete
 	} else {
 		cur_grim.writeAccess = ($xhr.getResponseHeader('GRIMOIRE-WRITE-ACCESS') == 'true')? true : false;
+	}
+}
+
+function doHeartbeat() {
+	if (!cur_grim.writeAccess) {
+		// We're in read-only mode; just ovewrite the current
+		cur_grim.model.fetch({
+			success: function(model, response) {
+				// This is a valid Grimoire
+				if (JSON.stringify(response.rows) != JSON.stringify(cur_grim.rows)) {
+					cur_grim.rows.reset(response.rows); // Save the row collection
+				}
+			}
+		});
+		
 	}
 }
 

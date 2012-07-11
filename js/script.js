@@ -1,14 +1,18 @@
 var GrimoireRow = Backbone.Model.extend({
-	urlRoot: 'api/row/'
+	urlRoot: 'api/row/',
+	saveRow: function() {
+		var data = _.extend(this.toJSON(), {
+			gid: cur_grim.model.myKey(),
+			order: this.collection.indexOf(this)
+		});
+		this.save({}, {
+			data: JSON.stringify(data),
+			contentType: 'application/json'
+		});
+	},
 });
 var GrimoireRows = Backbone.Collection.extend({
 	model: GrimoireRow,
-	addMeta: function() {
-		var gid = cur_grim.model.myKey();
-		this.each(function(e, i) {
-			e.set({'order':i, 'gid':gid}, {silent:true});
-		});
-	}
 });
 var Grimoire = Backbone.Model.extend({
 	defaults: {
@@ -74,17 +78,17 @@ var GrimoireRowsView = Backbone.View.extend({
 	initialize: function() {
 		this.model.on('reset remove', this.render, this);
 		this.model.on('add', function(e, m) {
-			m.addMeta();
-			m.last().save();
-			this.$el.append(new GrimoireRowView({model: m.last()}).render().el);
-			m.last().on('change', function(model) { model.save(); });
+			var justAdded = m.last();
+			justAdded.saveRow();
+			this.$el.append(new GrimoireRowView({model: justAdded}).render().el);
+			justAdded.on('change', function(model) { model.saveRow(); });
 		}, this);
 	},
 	render: function() {
 		this.$el.html(''); // Clear existing
 		this.model.each(function (e, i) {
 			this.$el.append(new GrimoireRowView({model:e}).render().el);
-			e.on('change', function(model) { model.save(); });
+			e.on('change', function(model) { model.saveRow(); });
 		}, this);
 		return this; // Chain
 	}
@@ -154,7 +158,7 @@ $(document).ready(function() {
 		var $xhr = cur_grim.model.fetch({
 			success: function(model, response) {
 				// This is a valid Grimoire
-				cur_grim.rows.reset(response.rows).addMeta(); // Save the row collection
+				cur_grim.rows.reset(response.rows); // Save the row collection
 				
 				$page_loader.hide();
 				$curGrim.show();

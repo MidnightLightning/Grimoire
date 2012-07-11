@@ -59,7 +59,7 @@ $api->get('/api/auth/{id}', function($id) use ($api) {
 	}
 	
 	$out->err = 'Authorized';
-	return $api->json($out, 200, array('GRIMOIRE-WRITE-ACCESS' => 'true'));
+	return $api->json($out, CRUD::ERR_OK, array('GRIMOIRE-WRITE-ACCESS' => 'true'));
 });
 
 abstract class CRUD implements Silex\ControllerProviderInterface {
@@ -380,6 +380,37 @@ class Rows extends CRUD {
 	}
 }
 $api->mount('/api/row', new Rows());
+
+$api->get('/api/rows/{id}', function($id) use ($api) {
+	// Get just the rows for this Grimoire
+	$db = $api['db']; // PDO object
+
+	// Check write-access
+	$authorized = false;
+	if (strlen($id) == 24) {
+		$public = substr($id, 0, 8);
+		$admin = substr($id, 8, 16);
+	
+		$stmt = $db->prepare('SELECT `public_key` FROM `grimoire` WHERE `public_key`=:pid AND `admin_key`=:aid');
+		$stmt->bindValue(':pid', $public);
+		$stmt->bindValue(':aid', $admin);
+		$stmt->execute();
+		if ($stmt->rowCount() < 1) $authorized = true;
+	}
+	$id = substr($id, 0, 8); // Trim off admin key, if any
+
+	$stmt = $db->prepare('SELECT * FROM `row` WHERE `gid`=:gid ORDER BY `order`');
+	$stmt->bindValue(':gid', $id);
+	$stmt->execute();
+	$out = array();
+	while ($row = $stmt->fetch()) {
+		$row_data = json_decode($row['data']); // Data is JSON-serialized in database. De-serialize it, since it will get re-serialized as part of the output
+		$row_data->id = $row['id'];
+		$out[] = $row_data;
+	}
+	
+	return $api->json($out, CRUD::ERR_OK, ($authorized)? array('GRIMOIRE-WRITE-ACCESS' => 'true') : array());
+});
 
 
 $api->run();

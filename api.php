@@ -279,11 +279,12 @@ class Rows extends CRUD {
 		$stmt = $db->prepare('SELECT * FROM `'.$this->table.'` WHERE `id`=? LIMIT 1');
 		$stmt->execute(array($id));
 		if ($stmt->rowCount() < 1) return $this->error_out('No such row', self::ERR_NOT_FOUND);
-		
-		$out = new CrudResponse();
-		$out->id = $id;
-		$out->data = $stmt->fetch(PDO::FETCH_OBJ);
-
+		$out = $stmt->fetch(PDO::FETCH_OBJ);
+		$data = json_decode($out->data, true);
+		unset($out->data);
+		foreach($data as $key => $value) {
+			$out->$key = $value;
+		}
 		return $app->json($out, self::ERR_OK);
 	}
 

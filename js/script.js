@@ -152,13 +152,14 @@ $(document).ready(function() {
 			if ($xhr.state() == 'pending') {
 				setTimeout(function() { cur_grim.parseWriteHeader($xhr); }, 200); // Wait until complete
 			} else {
-				var oldValue = (this.writeAccess)? true : false; // Clone
-				this.writeAccess = ($xhr.getResponseHeader('GRIMOIRE-WRITE-ACCESS') == 'true')? true : false;
-				if (oldValue != this.writeAccess) {
-					this.trigger('change:permission', this.writeAccess);
-				}
-				this.trigger('sync:permission', this.writeAccess);
+				this.setAccess(($xhr.getResponseHeader('GRIMOIRE-WRITE-ACCESS') == 'true')? true : false);
 			}
+		},
+		setAccess: function(newValue) {
+			var oldValue = (this.writeAccess)? true : false; // Clone
+			this.writeAccess = newValue;
+			if (oldValue != newValue) this.trigger('change:permission', newValue);
+			this.trigger('sync:permission', newValue);
 		},
 		
 		doHeartbeat: function() {
@@ -220,7 +221,7 @@ $(document).ready(function() {
 		// Work on a local Grimoire
 		$page_loader.hide();
 		$curGrim.show();
-		cur_grim.writeAccess = true;
+		cur_grim.setAccess(true);
 	}
 	
 	// New slot save action

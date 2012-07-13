@@ -38,13 +38,21 @@ var Grimoire = Backbone.Model.extend({
 	}
 });
 
-var GrimoireTitle = Backbone.View.extend({
+var GrimoireHeader = Backbone.View.extend({
 	render: function() {
 		var name = this.model.get('name');
+		this.$el.html(''); // Clear existing
+		
+		if (cur_grim.writeAccess) this.$el.append('<div id="grim_link_icon" title="show links">#</div>');
 		if (name != '' || name == this.model.defaults.name) {
-			this.$el.html('<span class="name">'+this.model.get('name')+'</span>').removeClass('default');
+			this.$el.append('<h1 id="grim_title"><span class="name">'+this.model.get('name')+'</span></h1>').removeClass('default');
 		} else {
-			this.$el.html('<span class="name">'+this.model.defaults.name+'</span>').addClass('default');
+			this.$el.append('<h1 id="grim_title"><span class="name">'+this.model.defaults.name+'</span></h1>').addClass('default');
+		}
+		
+		if (cur_grim.writeAccess) {
+			var base_url = window.location.protocol+'//'+window.location.host+window.location.pathname+'#';
+			this.$el.append('<div id="grim_link_content"><dl><dt>Public (read-only) URL:</dt><dd>'+base_url+this.model.get('public_key')+'</dd><dt>Admin (write-access) URL:</dt><dd>'+base_url+this.model.get('public_key')+this.model.get('admin_key')+'</dd></dl></div>');
 		}
 		return this; // Chain
 	},
@@ -151,11 +159,13 @@ $(document).ready(function() {
 		cur_grim.rows = new GrimoireRows();
 		cur_grim.rows.on('all', function(name) { console.log('rows: ', name); });
 
-		new GrimoireTitle({
+		cur_grim.headerView = new GrimoireHeader({
 			model: cur_grim.model,
-			el: $curGrim.find('#grim_title').get(0)
+			el: $curGrim.find('div#grim_header').get(0)
 		});
-		new GrimoireRowsView({
+		cur_grim.on('change:permission', function() { cur_grim.headerView.render(); });
+		
+		cur_grim.rowsView = new GrimoireRowsView({
 			model: cur_grim.rows,
 			el: $curGrim.find('ul#grim_slots').get(0)
 		})
@@ -193,6 +203,12 @@ $(document).ready(function() {
 		}
 	});
 	
+	// Admin link interaction
+	$(document).on('click', '#grim_header #grim_link_icon', function(e) {
+		$('#grim_header #grim_link_content').slideToggle('fast');
+	});
+	$(document).on('click dblclick', '#grim_link_content dd', function(e) {	selectText(this); });
+	
 	// Heartbeat
 	setInterval(doHeartbeat, 8000);
 });
@@ -227,6 +243,27 @@ function doHeartbeat() {
 
 function addSlot(name) {
 	cur_grim.rows.add({'name': name});
+}
+
+function selectText(el) {
+	if (window.getSelection) {
+		var selection = window.getSelection();
+		if (selection.setBaseAndExtent) {
+			// Safari
+			selection.setBaseAndExtent(el, 0, el, 1);
+		} else {
+			// Mozilla, Opera
+			var range = document.createRange();
+			range.selectNodeContents(el);
+			selection.removeAllRanges();
+			selection.addRange(range);
+		}
+	} else {
+		// IE
+		var range = document.body.createTextRange();
+		range.moveToElementText(el);
+		range.select();
+	}
 }
 
 /*

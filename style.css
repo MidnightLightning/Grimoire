@@ -87,8 +87,14 @@ p { margin:0 0 1em 0; }
 
 table#features td { padding-bottom:1em; }
 
-#grim_display h1#grim_title { border-bottom:solid 1px #A90; }
-#grim_display h1#grim_title.default { color:rgba(0,0,0, 0.3); }
+#grim_display #grim_header { border-bottom:solid 1px #A90; }
+#grim_display #grim_link_icon { float:right; font-size:2em; font-weight:bold; color:#973; cursor:pointer; }
+#grim_display #grim_link_content { font-size:75%; color:#300; background-color:rgb(205, 170, 100); background-color:rgba(205, 170, 100, 0.3); padding:0.5em 0 0.5em 1em; margin:0.5em; display:none; }
+#grim_display #grim_link_content dl { margin:0; }
+#grim_display #grim_link_content dd { font-family:monospace; margin-left:1em; }
+#grim_display #grim_link_content dt { font-weight:bold; }
+#grim_display h1#grim_title { margin-bottom:0; }
+#grim_display h1#grim_title.default { opacity:0.3; }
 
 .loader { display: inline-block; height:16px; width:16px; margin:0 5px;
 	-o-transition: opacity 0.25s linear;

@@ -37,7 +37,7 @@ require_once('config.php');
 <p id="page_loading" style="position:absolute; top:0; width:100%; text-align:center; font-style:italic;"><img src="<?= $doc_root ?>img/tref_load.svg" /><br /><span class="message">Reticulating splines...</span></p>
 
 <div id="grim_display" style="display:none;">
-<h1 id="grim_title" class="default">New Grimoire</h1>
+<div id="grim_header"><h1 id="grim_title" class="default">New Grimoire</h1></div>
 <ul id="grim_slots">
 </ul>
 <div id="new_slot"><input type="text" id="new_slot_text" /></div>

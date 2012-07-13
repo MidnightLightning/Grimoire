@@ -22,7 +22,7 @@ var Grimoire = Backbone.Model.extend({
 	idAttribute: "public_key",
 	urlRoot: 'api/grimoire/',
 	url: function() {
-		return this.urlRoot+this.myKey();
+		return (this.isNew())? this.urlRoot : this.urlRoot+this.myKey();
 	},
 	parse: function(response) {
 		var response = _.clone(response);
@@ -44,13 +44,13 @@ var GrimoireHeader = Backbone.View.extend({
 		this.$el.html(''); // Clear existing
 		
 		if (cur_grim.writeAccess) this.$el.append('<div id="grim_link_icon" title="show links">#</div>');
-		if (name != '' || name == this.model.defaults.name) {
-			this.$el.append('<h1 id="grim_title"><span class="name">'+this.model.get('name')+'</span></h1>').removeClass('default');
+		if (name != '' && name != this.model.defaults.name) {
+			this.$el.append('<h1 id="grim_title"><span class="name">'+this.model.get('name')+'</span></h1>');
 		} else {
-			this.$el.append('<h1 id="grim_title"><span class="name">'+this.model.defaults.name+'</span></h1>').addClass('default');
+			this.$el.append('<h1 id="grim_title" class="default"><span class="name">'+this.model.defaults.name+'</span></h1>');
 		}
 		
-		if (cur_grim.writeAccess) {
+		if (cur_grim.writeAccess && !this.model.isNew()) {
 			var base_url = window.location.protocol+'//'+window.location.host+window.location.pathname+'#';
 			this.$el.append('<div id="grim_link_content"><dl><dt>Public (read-only) URL:</dt><dd>'+base_url+this.model.get('public_key')+'</dd><dt>Admin (write-access) URL:</dt><dd>'+base_url+this.model.get('public_key')+this.model.get('admin_key')+'</dd></dl></div>');
 		}
@@ -62,12 +62,12 @@ var GrimoireHeader = Backbone.View.extend({
 		'keydown .title_update': 'keyEvent'
 	},
 	initialize: function() {
-		this.model.on('change:name', this.render, this);
+		this.model.on('change:name change:public_key', this.render, this);
 	},
 	edit: function() {
 		if (!cur_grim.writeAccess) return false;
 		$input = this.make('input', {'type':'text', 'class':'title_update', 'value':this.model.get('name')});
-		this.$el.find('h1').html($input);
+		this.$el.find('h1').html($input).removeClass('default');
 		$input.select();
 	},
 	endEdit: function(e) {
@@ -183,25 +183,30 @@ $(document).ready(function() {
 	};
 	_.extend(cur_grim, Backbone.Events); // Make event-able
 	
+	// Set up Models/Views
+	cur_grim.model = new Grimoire();
+	cur_grim.model.on('all', function(name) { console.log('cur_grim: ', name); });
+	cur_grim.model.on('change:name', function(model, newValue) {
+		if (cur_grim.writeAccess) model.save();
+	});
+
+	cur_grim.rows = new GrimoireRows();
+	cur_grim.rows.on('all', function(name) { console.log('rows: ', name); });
+	
+	cur_grim.headerView = new GrimoireHeader({
+		model: cur_grim.model,
+		el: $curGrim.find('div#grim_header').get(0)
+	});
+	cur_grim.on('change:permission', function() { cur_grim.headerView.render(); });
+	
+	cur_grim.rowsView = new GrimoireRowsView({
+		model: cur_grim.rows,
+		el: $curGrim.find('ul#grim_slots').get(0)
+	});
+	
 	if (window.location.hash) {
 		// See if the hash is a valid grimoire
-		cur_grim.model = new Grimoire({
-			public_key: window.location.hash.substring(1)
-		});
-		cur_grim.model.on('all', function(name) { console.log('cur_grim: ', name); });
-		cur_grim.rows = new GrimoireRows();
-		cur_grim.rows.on('all', function(name) { console.log('rows: ', name); });
-
-		cur_grim.headerView = new GrimoireHeader({
-			model: cur_grim.model,
-			el: $curGrim.find('div#grim_header').get(0)
-		});
-		cur_grim.on('change:permission', function() { cur_grim.headerView.render(); });
-		
-		cur_grim.rowsView = new GrimoireRowsView({
-			model: cur_grim.rows,
-			el: $curGrim.find('ul#grim_slots').get(0)
-		});
+		cur_grim.model.set('public_key', window.location.hash.substring(1));
 		
 		var $xhr = cur_grim.model.fetch({
 			success: function(model, response) {
@@ -211,14 +216,16 @@ $(document).ready(function() {
 				$page_loader.hide();
 				$curGrim.show();
 				
-				cur_grim.model.on('change:name', function(model, newValue) {
-					if (cur_grim.writeAccess) model.save();
-				});
 			}
 		});
 		cur_grim.parseWriteHeader($xhr);
 	} else {
 		// Work on a local Grimoire
+		cur_grim.model.on('change:public_key', function(model, newValue) {
+			// We have a new server ID for this Grimoire
+			window.location.hash = '#'+model.myKey()
+		});
+		
 		$page_loader.hide();
 		$curGrim.show();
 		cur_grim.setAccess(true);

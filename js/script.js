@@ -111,6 +111,9 @@ var GrimoireRowView = Backbone.View.extend({
 		this.$el.html('<span class="name">'+this.model.get('name')+'</span>');
 		return this; // Chain
 	},
+	initialize: function() {
+		this.model.on('doEdit', this.edit, this);
+	},
 	events: {
 		'dblclick .name': 'edit',
 		'blur .slot_update': 'endEdit',
@@ -137,9 +140,23 @@ var GrimoireRowView = Backbone.View.extend({
 		}
 	},
 	keyEvent: function(e) {
-		if (e.which == 13) {
-			// Enter key was pressed
-			this.endEdit();
+		console.log('key:', e.which);
+		switch(e.which) {
+			case 13: // Enter
+				this.endEdit();
+				break;
+			case 27: // Escape
+				this.$el.find('input.slot_update').val(this.model.get('name')); // Need to reset, because a 'blur' event will be fired by re-rendering
+				this.render();
+				break;
+			case 9: // Tab
+				var myIndex = this.model.collection.indexOf(this.model);
+				var nextModel = this.model.collection.at(e.shiftKey ? myIndex-1 : myIndex+1);
+				if (nextModel != undefined) {
+					e.preventDefault(); // Don't jump to next tab item
+					nextModel.trigger('doEdit');
+				}
+				break;
 		}
 	}
 })

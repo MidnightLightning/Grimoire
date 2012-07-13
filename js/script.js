@@ -147,7 +147,39 @@ var GrimoireRowView = Backbone.View.extend({
 $(document).ready(function() {
 	var $page_loader = $('p#page_loading');
 	var $curGrim = $('div#grim_display'); // Attach to Grimoire fields wrapper
-	window.cur_grim = {}; // Standard object for holding data
+	window.cur_grim = { // Standard object for holding data
+		parseWriteHeader: function($xhr) {
+			if ($xhr.state() == 'pending') {
+				setTimeout(function() { cur_grim.parseWriteHeader($xhr); }, 200); // Wait until complete
+			} else {
+				var oldValue = (this.writeAccess)? true : false; // Clone
+				this.writeAccess = ($xhr.getResponseHeader('GRIMOIRE-WRITE-ACCESS') == 'true')? true : false;
+				if (oldValue != this.writeAccess) {
+					this.trigger('change:permission', this.writeAccess);
+				}
+				this.trigger('sync:permission', this.writeAccess);
+			}
+		},
+		
+		doHeartbeat: function() {
+			if (!cur_grim.writeAccess) {
+				// We're in read-only mode; just ovewrite the current
+				cur_grim.model.fetch({
+					success: function(model, response) {
+						// This is a valid Grimoire
+						if (JSON.stringify(response.rows) != JSON.stringify(cur_grim.rows)) {
+							cur_grim.rows.reset(response.rows); // Save the row collection
+						}
+					}
+				});
+
+			}
+		},
+
+		addSlot: function(name) {
+			this.rows.add({'name': name});
+		}
+	};
 	_.extend(cur_grim, Backbone.Events); // Make event-able
 	
 	if (window.location.hash) {
@@ -168,7 +200,7 @@ $(document).ready(function() {
 		cur_grim.rowsView = new GrimoireRowsView({
 			model: cur_grim.rows,
 			el: $curGrim.find('ul#grim_slots').get(0)
-		})
+		});
 		
 		var $xhr = cur_grim.model.fetch({
 			success: function(model, response) {
@@ -183,7 +215,7 @@ $(document).ready(function() {
 				});
 			}
 		});
-		parseWriteHeader($xhr);
+		cur_grim.parseWriteHeader($xhr);
 	} else {
 		// Work on a local Grimoire
 		$page_loader.hide();
@@ -197,7 +229,7 @@ $(document).ready(function() {
 			// Tab or enter pressed
 			e.preventDefault(); // Stay in this field
 			var $new = $(this);
-			addSlot($new.val());
+			cur_grimaddSlot($new.val());
 			
 			$new.val(''); // Clear input
 		}
@@ -210,40 +242,8 @@ $(document).ready(function() {
 	$(document).on('click dblclick', '#grim_link_content dd', function(e) {	selectText(this); });
 	
 	// Heartbeat
-	setInterval(doHeartbeat, 8000);
+	setInterval(cur_grim.doHeartbeat, 8000);
 });
-
-function parseWriteHeader($xhr) {
-	if ($xhr.state() == 'pending') {
-		setTimeout(function() { parseWriteHeader($xhr); }, 200); // Wait until complete
-	} else {
-		var oldValue = (cur_grim.writeAccess)? true : false; // Clone
-		cur_grim.writeAccess = ($xhr.getResponseHeader('GRIMOIRE-WRITE-ACCESS') == 'true')? true : false;
-		if (oldValue != cur_grim.writeAccess) {
-			cur_grim.trigger('change:permission', cur_grim.writeAccess);
-		}
-		cur_grim.trigger('sync:permission', cur_grim.writeAccess);
-	}
-}
-
-function doHeartbeat() {
-	if (!cur_grim.writeAccess) {
-		// We're in read-only mode; just ovewrite the current
-		cur_grim.model.fetch({
-			success: function(model, response) {
-				// This is a valid Grimoire
-				if (JSON.stringify(response.rows) != JSON.stringify(cur_grim.rows)) {
-					cur_grim.rows.reset(response.rows); // Save the row collection
-				}
-			}
-		});
-		
-	}
-}
-
-function addSlot(name) {
-	cur_grim.rows.add({'name': name});
-}
 
 function selectText(el) {
 	if (window.getSelection) {

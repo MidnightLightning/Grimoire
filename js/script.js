@@ -140,6 +140,7 @@ $(document).ready(function() {
 	var $page_loader = $('p#page_loading');
 	var $curGrim = $('div#grim_display'); // Attach to Grimoire fields wrapper
 	window.cur_grim = {}; // Standard object for holding data
+	_.extend(cur_grim, Backbone.Events); // Make event-able
 	
 	if (window.location.hash) {
 		// See if the hash is a valid grimoire
@@ -200,7 +201,12 @@ function parseWriteHeader($xhr) {
 	if ($xhr.state() == 'pending') {
 		setTimeout(function() { parseWriteHeader($xhr); }, 200); // Wait until complete
 	} else {
+		var oldValue = (cur_grim.writeAccess)? true : false; // Clone
 		cur_grim.writeAccess = ($xhr.getResponseHeader('GRIMOIRE-WRITE-ACCESS') == 'true')? true : false;
+		if (oldValue != cur_grim.writeAccess) {
+			cur_grim.trigger('change:permission', cur_grim.writeAccess);
+		}
+		cur_grim.trigger('sync:permission', cur_grim.writeAccess);
 	}
 }
 

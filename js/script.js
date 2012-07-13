@@ -67,7 +67,7 @@ var GrimoireHeader = Backbone.View.extend({
 	edit: function() {
 		if (!cur_grim.writeAccess) return false;
 		$input = this.make('input', {'type':'text', 'class':'title_update', 'value':this.model.get('name')});
-		this.$el.html($input);
+		this.$el.find('h1').html($input);
 		$input.select();
 	},
 	endEdit: function(e) {

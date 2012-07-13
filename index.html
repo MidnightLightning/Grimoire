@@ -31,6 +31,7 @@
 	<p>One of the most annoying aspects of playing a spellcaster in a d20 campaign is keeping track of your spells. It's an unfortunate duality that the source of your greatest power as a spellcaster is the one thing that slows you down as a player. You may have to keep track of which spell is recorded in which spellbook, which spells you have memorized today, how many have been cast, and how to present that information correctly (and honestly!) to your fellow players and DM.</p>
 	<p>Put it in your Grimoire and get back to gaming. Grimoire is a multipurpose list that caters to all d20 magic users. Using the increased potential of HTML5 and modern web technologies, it puts the magic back in spellcasting.</p>
 	<p style="text-align:center; margin-top:2em;"><a href="g/"><img src="img/btn_new.png" alt="Start New" /></a></p>
+	<div id="recent"></div>
 	
 	<table id="features">
 		<tr><td><img src="img/feature_html5.svg" style="width:50px; padding-right:10px;" alt="" /></td><td><strong>HTML5 Based:</strong> The latest standards in the HTML language allow more flexibility across device platforms, and unlocking the potential to truly be a web-based application, rather than just a web site, letting you interact and control your data.</td></tr>
@@ -58,5 +59,45 @@
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <script>window.jQuery || document.write('<script src="js/jquery-1.7.1.min.js"><\/script>')</script>
 <script src="js/plugins.js"></script>
+<script>
+window.recent_list = [];
+window.recent_waiting = 0;
+$(document).ready(function() {
+	if (Modernizr.localstorage) {
+		// Get recent grimoires
+		var recent = JSON.parse(localStorage.getItem('grimoire.recent'));
+		if (recent != null) {
+			recent_waiting = recent.length;
+			_.each(recent, function(public_key, index) {
+				recent_list.push({public: public_key});
+				$.ajax({
+					url: 'api/grimoire/'+public_key,
+					dataType: 'json',
+					success: function(data, status, xhr) {
+						var row = _.find(recent_list, function(item) { return item.public == data.public_key; });
+						row.name = data.name;
+						recent_waiting--;
+						console.log(recent_waiting);
+						if (recent_waiting == 0) drawRecent();
+					}
+				});
+			});
+		};
+	}
+});
+
+function drawRecent() {
+	var $recent = $('#recent');
+	var $list = $('<ul></ul>');
+	$recent.html('<h2>Recently visited:</h2>').append($list);
+	_.each(recent_list, function(item) {
+		// See if we know the admin key for this Grimoire
+		var admin_key = localStorage.getItem('grimoire.'+item.public);
+		var url = 'g#'+item.public;
+		if (admin_key != null) url+= admin_key
+		$list.append('<li><a href="'+url+'">'+item.name+'</a></li>');
+	});
+}
+</script>
 </body>
 </html>

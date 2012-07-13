@@ -193,6 +193,17 @@ $(document).ready(function() {
 
 			}
 		},
+		
+		saveRecent: function() {
+			if (Modernizr.localstorage) {
+				// Save as a recent visit
+				var recent = JSON.parse(localStorage.getItem('grimoire.recent'));
+				if (recent == null) recent = [];
+				recent.unshift(this.model.get('public_key')); // Add this ID to the beginning of the list
+				recent = _.uniq(recent);
+				localStorage.setItem('grimoire.recent', JSON.stringify(recent));
+			}
+		},
 
 		addSlot: function(name) {
 			this.rows.add({'name': name});
@@ -214,7 +225,14 @@ $(document).ready(function() {
 		model: cur_grim.model,
 		el: $curGrim.find('div#grim_header').get(0)
 	});
-	cur_grim.on('change:permission', function() { cur_grim.headerView.render(); });
+	cur_grim.on('change:permission', function() {
+		cur_grim.headerView.render();
+		
+		if (cur_grim.writeAccess && Modernizr.localstorage) {
+			// Save admin key locally
+			localStorage.setItem('grimoire.'+cur_grim.model.get('public_key'), cur_grim.model.get('admin_key'));
+		}
+	});
 	
 	cur_grim.rowsView = new GrimoireRowsView({
 		model: cur_grim.rows,
@@ -229,7 +247,8 @@ $(document).ready(function() {
 			success: function(model, response) {
 				// This is a valid Grimoire
 				cur_grim.rows.reset(response.rows); // Save the row collection
-				
+				cur_grim.saveRecent();
+
 				$page_loader.hide();
 				$curGrim.show();
 				
@@ -241,6 +260,7 @@ $(document).ready(function() {
 		cur_grim.model.on('change:public_key', function(model, newValue) {
 			// We have a new server ID for this Grimoire
 			window.location.hash = '#'+model.myKey()
+			cur_grim.saveRecent();
 		});
 		
 		$page_loader.hide();

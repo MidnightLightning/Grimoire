@@ -90,6 +90,9 @@ table#features td { padding-bottom:1em; }
 #grim_display #grim_header { border-bottom:solid 1px #A90; }
 #grim_display #grim_link_icon { float:right; font-size:2em; font-weight:bold; color:#973; cursor:pointer; }
 #grim_display #grim_link_content { font-size:75%; color:#300; background-color:rgb(205, 170, 100); background-color:rgba(205, 170, 100, 0.3); padding:0.5em 0 0.5em 1em; margin:0.5em; display:none; }
+#recent { font-size:75%; color:#300; background-color:rgb(205, 170, 100); background-color:rgba(205, 170, 100, 0.3); padding:0.5em 0 0.5em 1em; margin:0.5em 0 1em; }
+#recent h2 { margin:0; }
+#recent ul { margin:0; padding-left:2em; }
 #grim_display #grim_link_content dl { margin:0; }
 #grim_display #grim_link_content dd { font-family:monospace; margin-left:1em; }
 #grim_display #grim_link_content dt { font-weight:bold; }

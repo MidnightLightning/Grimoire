@@ -93,8 +93,10 @@ table#features td { padding-bottom:1em; }
 #grim_display #grim_link_content dl { margin:0; }
 #grim_display #grim_link_content dd { font-family:monospace; margin-left:1em; }
 #grim_display #grim_link_content dt { font-weight:bold; }
-#grim_display h1#grim_title { margin-bottom:0; }
+#grim_display h1#grim_title { margin-bottom:0; width:90%; }
 #grim_display h1#grim_title.default { opacity:0.3; }
+#grim_display ul#grim_slots { margin-bottom:0; }
+#grim_display div#new_slot { margin-left:3em; }
 
 .loader { display: inline-block; height:16px; width:16px; margin:0 5px;
 	-o-transition: opacity 0.25s linear;

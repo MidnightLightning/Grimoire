@@ -230,7 +230,7 @@ $(document).ready(function() {
 			// Tab or enter pressed
 			e.preventDefault(); // Stay in this field
 			var $new = $(this);
-			cur_grimaddSlot($new.val());
+			cur_grim.addSlot($new.val());
 			
 			$new.val(''); // Clear input
 		}

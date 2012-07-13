@@ -100,7 +100,6 @@ abstract class CRUD implements Silex\ControllerProviderInterface {
 class CrudResponse {
 	public $err_no = CRUD::ERR_OK;
 	public $error = false;
-	public $data = false;
 }
 
 class Grimoires extends CRUD {

@@ -119,12 +119,10 @@ class Grimoires extends CRUD {
 		$stmt->execute();
 		if ($stmt->rowCount() < 1) return $this->error_out('SQL Failed insert: '.var_export($stmt->errorInfo(), true), self::ERR_INTERNAL_ERROR);
 		
-		$out = new CrudResponse();
-		$out->id = $db->lastInsertId();
-		$out->err_no = self::ERR_CREATED;
+		$out = new stdClass;
 		$out->public_key = $new_id[0];
 		$out->admin_key = $new_id[1];		
-		return $app->json($out, self::ERR_CREATED);
+		return $app->json($out, self::ERR_CREATED, array('GRIMOIRE-WRITE-ACCESS' => 'true'));
 	}
 
 	function read($id) {
@@ -243,7 +241,7 @@ class Rows extends CRUD {
 	function create(Request $req) {
 		// Validate
 		if (!$req->request->has('gid') || $req->request->get('gid') == '') return $this->error_out('No Grimoire ID given', self::ERR_BAD_REQUEST);
-		if (!$req->request->has('order') || $req->request->get('order') == '') return $this->error_out('No Row ID given', self::ERR_BAD_REQUEST);
+		if (!$req->request->has('order') || $req->request->get('order') === '') return $this->error_out('No Row ID given', self::ERR_BAD_REQUEST);
 		
 		// Authorize
 		$gid = $req->request->get('gid');

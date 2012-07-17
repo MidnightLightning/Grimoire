@@ -130,6 +130,7 @@ class Grimoires extends CRUD {
 		$db = $app['db']; // PDO object
 		$authorized = $this->_is_authorized($id); // The full key is not needed, but was it provided?
 		if (strlen($id) > 8) $id = substr($id, 0, 8); // Trim off Admin key, if any
+		updateGrimoireDate($db, $id);
 
 		$out = new CrudResponse();
 		
@@ -158,6 +159,7 @@ class Grimoires extends CRUD {
 		$app = $this->app; // Silex\Application
 		$db = $app['db']; // PDO object
 		$id = substr($id, 0, 8); // Trim off Admin key
+		updateGrimoireDate($db, $id);
 		
 		// Get existing
 		$stmt = $db->prepare('SELECT `name` FROM `'.$this->table.'` WHERE `public_key`=?');
@@ -251,6 +253,7 @@ class Rows extends CRUD {
 		$app = $this->app; // Silex\Application
 		$db = $app['db']; // PDO object
 		$gid = substr($gid, 0, 8); // Trim off Admin key
+		updateGrimoireDate($db, $gid);
 
 		$data = new stdClass;
 		foreach($req->request->keys() as $key) {
@@ -279,6 +282,8 @@ class Rows extends CRUD {
 		$stmt->execute(array($id));
 		if ($stmt->rowCount() < 1) return $this->error_out('No such row', self::ERR_NOT_FOUND);
 		$out = $stmt->fetch(PDO::FETCH_OBJ);
+		updateGrimoireDate($db, $out->gid);
+		
 		$data = json_decode($out->data, true);
 		unset($out->data);
 		foreach($data as $key => $value) {
@@ -299,6 +304,7 @@ class Rows extends CRUD {
 		$gid = substr($gid, 0, 8); // Trim off Admin key
 		$app = $this->app; // Silex\Application
 		$db = $app['db']; // PDO object
+		updateGrimoireDate($db, $gid);
 		
 		$stmt = $db->prepare('SELECT `id` FROM `'.$this->table.'` WHERE `gid`=:gid AND `id`=:id');
 		$stmt->bindValue(':gid', $gid);
@@ -395,6 +401,7 @@ $api->get('/api/rows/{id}', function($id) use ($api) {
 		if ($stmt->rowCount() < 1) $authorized = true;
 	}
 	$id = substr($id, 0, 8); // Trim off admin key, if any
+	updateGrimoireDate($db, $id);
 
 	$stmt = $db->prepare('SELECT * FROM `row` WHERE `gid`=:gid ORDER BY `order`');
 	$stmt->bindValue(':gid', $id);
@@ -409,5 +416,10 @@ $api->get('/api/rows/{id}', function($id) use ($api) {
 	return $api->json($out, CRUD::ERR_OK, ($authorized)? array('GRIMOIRE-WRITE-ACCESS' => 'true') : array());
 });
 
+function updateGrimoireDate($db, $gid) {
+	$gid = substr($gid, 0, 8); // Strip off any admin key
+	$stmt = $db->prepare('UPDATE `grimoire` SET `last_viewed`=NOW() WHERE `public_key`=?');
+	$stmt->execute(array($gid));
+}
 
 $api->run();

@@ -102,6 +102,21 @@ var GrimoireRowsView = Backbone.View.extend({
 			this.$el.append(new GrimoireRowView({model:e}).render().el);
 			e.on('change', function(model) { model.saveRow(); });
 		}, this);
+		this.$el.sortable({
+			placeholder: "grim-sort-placeholder",
+			update: _.bind(function(e, ui) {
+				var collection = this.model;
+				var newList = [];
+				this.$el.children().each(function(i) {
+					var id = $(this).data('id'); // Which row is this list item associated with?
+					newList.push(collection.get(id));
+				});
+				collection.reset(newList, {silent: true}); // Create a new order; no need to trigger an event since we're already in order
+				collection.each(function (e, i) {
+					e.saveRow(); // Notice the new order
+				}, collection);
+			}, this)
+		});
 		return this; // Chain
 	}
 });
@@ -109,6 +124,7 @@ var GrimoireRowView = Backbone.View.extend({
 	tagName: 'li',
 	render: function() {
 		this.$el.html('<span class="name">'+this.model.get('name')+'</span>');
+		this.$el.data('id', this.model.get('id')); // Save this model's row, so the sortable event can find it
 		return this; // Chain
 	},
 	initialize: function() {

@@ -77,7 +77,6 @@ $(document).ready(function() {
 						var row = _.find(recent_list, function(item) { return item.public == data.public_key; });
 						row.name = data.name;
 						recent_waiting--;
-						console.log(recent_waiting);
 						if (recent_waiting == 0) drawRecent();
 					}
 				});

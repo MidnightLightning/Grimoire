@@ -10,10 +10,10 @@ var GrimoireRow = Backbone.Model.extend({
 			data: JSON.stringify(data),
 			contentType: 'application/json'
 		}, options));
-	},
+	}
 });
 var GrimoireRows = Backbone.Collection.extend({
-	model: GrimoireRow,
+	model: GrimoireRow
 });
 var Grimoire = Backbone.Model.extend({
 	defaults: {

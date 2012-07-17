@@ -98,8 +98,13 @@ table#features td { padding-bottom:1em; }
 #grim_display #grim_link_content dt { font-weight:bold; }
 #grim_display h1#grim_title { margin-bottom:0; width:90%; }
 #grim_display h1#grim_title.default { opacity:0.3; }
-#grim_display ul#grim_slots { margin-bottom:0; }
-#grim_display div#new_slot { margin-left:3em; }
+#grim_display ul#grim_slots { margin-bottom:5px; padding-left:0px; list-style-type:none;}
+#grim_display ul#grim_slots li { padding:3px 0 3px 10px; }
+#grim_display ul#grim_slots li:nth-child(odd) { background-color:#EC8; background-color:rgba(150,80,0, 0.2); }
+#grim_display ul#grim_slots li.ui-sortable-helper { background-color:#FDA; }
+#grim_display ul#grim_slots li.grim-sort-placeholder { height:20px;}
+#grim_display div#new_slot { margin-left:10px; }
+#grim_display input { width:350px; }
 
 .loader { display: inline-block; height:16px; width:16px; margin:0 5px;
 	-o-transition: opacity 0.25s linear;

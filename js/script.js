@@ -277,6 +277,10 @@ $(document).ready(function() {
 			// We have a new server ID for this Grimoire
 			window.location.hash = '#'+model.myKey()
 			cur_grim.saveRecent();
+			if (Modernizr.localstorage) {
+				// Save admin key locally
+				localStorage.setItem('grimoire.'+cur_grim.model.get('public_key'), cur_grim.model.get('admin_key'));
+			}
 		});
 		
 		$page_loader.hide();

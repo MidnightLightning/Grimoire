@@ -74,12 +74,16 @@ td { vertical-align: top; }
    Author:
    ========================================================================== */
 body {position:relative; background-color:#300; }
-div#book_mid { width:960px; background-image: url('img/book_mid.jpg'); background-position:center 287px; background-repeat:repeat-y; margin:0 auto; height:500px; position:relative; }
+div#book_mid { width:960px; background-color:#FFD; background-image: url('img/book_mid.jpg'); background-position:center 287px; background-repeat:repeat-y; margin:0 auto; height:500px; position:relative; }
 div#book_top, div#book_bot { width:960px;}
 div#book_top { position:absolute; top:0px; }
 div#book_bot { position:absolute; bottom:0px; }
 
-div#left_col, div#right_col { position:absolute; width:445px; color:#100; }
+div#left_col, div#right_col { position:absolute; width:445px; color:#100;
+	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	box-sizing: border-box;         /* Opera/IE 8+ */
+ }
 div#left_col { top:10px; left:20px; }
 div#right_col { top:10px; left:495px; }
 
@@ -120,6 +124,18 @@ table#features td { padding-bottom:1em; }
 	transition: opacity 0.25s linear;
 }
 
+
+@media only screen and (max-width: 960px) {
+	div#book_top, div#book_bot, div#right_col { display:none; }
+	div#book_bot { display:none; }
+	div#book_mid { width:100%; background-image:none; }
+	div#left_col { width:100% !important; display:block; left:0; }
+	div#left_col .jspPane { padding:0 2em !important;
+		-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+		-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+		box-sizing: border-box;         /* Opera/IE 8+ */
+	}
+}
 
 /*
  * CSS Styles that are needed by jScrollPane for it to operate correctly.

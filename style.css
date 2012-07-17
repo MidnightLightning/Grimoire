@@ -92,7 +92,14 @@ table#features td { padding-bottom:1em; }
 #grim_display #grim_link_content { font-size:75%; color:#300; background-color:rgb(205, 170, 100); background-color:rgba(205, 170, 100, 0.3); padding:0.5em 0 0.5em 1em; margin:0.5em; display:none; }
 #recent { font-size:75%; color:#300; background-color:rgb(205, 170, 100); background-color:rgba(205, 170, 100, 0.3); padding:0.5em 0 0.5em 1em; margin:0.5em 0 1em; }
 #recent h2 { margin:0; }
-#recent ul { margin:0; padding-left:2em; }
+#recent ul { margin:0; padding-left:2em; list-style-position:inside;
+	-moz-column-count: 2;
+	-moz-column-gap: 20px;
+	-webkit-column-count: 2;
+	-webkit-column-gap: 20px;
+	column-count: 2;
+	column-gap: 20px;
+}
 #grim_display #grim_link_content dl { margin:0; }
 #grim_display #grim_link_content dd { font-family:monospace; margin-left:1em; }
 #grim_display #grim_link_content dt { font-weight:bold; }

@@ -1,0 +1,277 @@
+/* =============================================================================
+   HTML5 Boilerplate CSS: h5bp.com/css
+   ========================================================================== */
+
+article, aside, details, figcaption, figure, footer, header, hgroup, nav, section { display: block; }
+audio, canvas, video { display: inline-block; *display: inline; *zoom: 1; }
+audio:not([controls]) { display: none; }
+[hidden] { display: none; }
+
+html { font-size: 100%; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+html, button, input, select, textarea { font-family: sans-serif; color: #222; }
+body { margin: 0; font-size: 10pt; line-height: 1.4; }
+
+::-moz-selection { background: #f7f07c; color: #100; text-shadow: none; }
+::selection { background: #f7f07c; color: #100; text-shadow: none; }
+
+a { color: #00e; }
+a:visited { color: #551a8b; }
+a:hover { color: #06e; }
+a:focus { outline: thin dotted; }
+a:hover, a:active { outline: 0; }
+
+abbr[title] { border-bottom: 1px dotted; }
+b, strong { font-weight: bold; }
+blockquote { margin: 1em 40px; }
+dfn { font-style: italic; }
+hr { display: block; height: 1px; border: 0; border-top: 1px solid #ccc; margin: 1em 0; padding: 0; }
+ins { background: #ff9; color: #000; text-decoration: none; }
+mark { background: #ff0; color: #000; font-style: italic; font-weight: bold; }
+pre, code, kbd, samp { font-family: monospace, serif; _font-family: 'courier new', monospace; font-size: 1em; }
+pre { white-space: pre; white-space: pre-wrap; word-wrap: break-word; }
+q { quotes: none; }
+q:before, q:after { content: ""; content: none; }
+small { font-size: 85%; }
+
+sub, sup { font-size: 75%; line-height: 0; position: relative; vertical-align: baseline; }
+sup { top: -0.5em; }
+sub { bottom: -0.25em; }
+
+ul, ol { margin: 1em 0; padding: 0 0 0 40px; }
+dd { margin: 0 0 0 40px; }
+nav ul, nav ol { list-style: none; list-style-image: none; margin: 0; padding: 0; }
+
+img { border: 0; -ms-interpolation-mode: bicubic; vertical-align: middle; }
+
+svg:not(:root) { overflow: hidden; }
+
+figure { margin: 0; }
+
+form { margin: 0; }
+fieldset { border: 0; margin: 0; padding: 0; }
+label { cursor: pointer; }
+legend { border: 0; *margin-left: -7px; padding: 0; white-space: normal; }
+button, input, select, textarea { font-size: 100%; margin: 0; vertical-align: baseline; *vertical-align: middle; }
+button, input { line-height: normal; }
+button, input[type="button"], input[type="reset"], input[type="submit"] { cursor: pointer; -webkit-appearance: button; *overflow: visible; }
+button[disabled], input[disabled] { cursor: default; }
+input[type="checkbox"], input[type="radio"] { box-sizing: border-box; padding: 0; *width: 13px; *height: 13px; }
+input[type="search"] { -webkit-appearance: textfield; -moz-box-sizing: content-box; -webkit-box-sizing: content-box; box-sizing: content-box; }
+input[type="search"]::-webkit-search-decoration, input[type="search"]::-webkit-search-cancel-button { -webkit-appearance: none; }
+button::-moz-focus-inner, input::-moz-focus-inner { border: 0; padding: 0; }
+textarea { overflow: auto; vertical-align: top; resize: vertical; }
+input:valid, textarea:valid {  }
+input:invalid, textarea:invalid { background-color: #f0dddd; }
+
+table { border-collapse: collapse; border-spacing: 0; }
+td { vertical-align: top; }
+
+.chromeframe { margin: 0.2em 0; background: #ccc; color: black; padding: 0.2em 0; }
+
+
+
+/* ===== Primary Styles ========================================================
+   Author:
+   ========================================================================== */
+body {position:relative; background-color:#300; }
+div#book_mid { width:960px; background-color:#FFD; background-image: url('img/book_mid.jpg'); background-position:center 287px; background-repeat:repeat-y; margin:0 auto; height:500px; position:relative; }
+div#book_top, div#book_bot { width:960px;}
+div#book_top { position:absolute; top:0px; }
+div#book_bot { position:absolute; bottom:0px; }
+
+div#left_col, div#right_col { position:absolute; width:445px; color:#100;
+	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	box-sizing: border-box;         /* Opera/IE 8+ */
+ }
+div#left_col { top:10px; left:20px; }
+div#right_col { top:10px; left:495px; }
+
+p { margin:0 0 1em 0; }
+
+table#features td { padding-bottom:1em; }
+
+#grim_display {
+	input { width:350px; }
+	#grim_header { border-bottom:solid 1px #A90; }
+	#grim_link_icon { float:right; font-size:2em; font-weight:bold; color:#973; cursor:pointer; }
+	#grim_help_icon { float:right; font-size:1.5em; line-height:1em; font-weight:bold; color:#973; cursor:pointer; }
+	#grim_link_content, #grim_help_content { font-size:75%; color:#300; background-color:rgb(205, 170, 100); background-color:rgba(205, 170, 100, 0.3); padding:0.5em 0 0.5em 1em; margin:0.5em; display:none; }
+	
+	#grim_link_content {
+		dl { margin:0; }
+		dd { font-family:monospace; margin-left:1em; }
+		dt { font-weight:bold; }
+	}
+	
+	h1#grim_title {
+		margin-bottom:0; width:90%;
+		&.default { opacity:0.3; }
+	}
+	
+	ul#grim_slots {
+		margin-bottom:5px; padding-left:0px; list-style-type:none;
+		li {
+			padding:3px 0 3px 10px;
+			&:nth-child(odd) { background-color:#EC8; background-color:rgba(150,80,0, 0.2); }
+			&.ui-sortable-helper { background-color:#FDA; }
+			&.grim-sort-placeholder { height:20px;}
+			span.name { width:80%; display:inline-block; }
+		}
+	}
+	
+	div#new_slot { margin-left:10px; }
+}
+
+#recent {
+	font-size:75%; color:#300; background-color:rgb(205, 170, 100); background-color:rgba(205, 170, 100, 0.3); padding:0.5em 0 0.5em 1em; margin:0.5em 0 1em;
+	h2 { margin:0; }
+	ul { margin:0; padding-left:2em; list-style-position:inside;
+		-moz-column-count: 2;
+		-moz-column-gap: 20px;
+		-webkit-column-count: 2;
+		-webkit-column-gap: 20px;
+		column-count: 2;
+		column-gap: 20px;
+	}
+}
+
+.loader { display: inline-block; height:16px; width:16px; margin:0 5px;
+	-o-transition: opacity 0.25s linear;
+	-moz-transition: opacity 0.25s linear;
+	-webkit-transition: opacity 0.25s linear;
+	transition: opacity 0.25s linear;
+}
+
+
+@media only screen and (max-width: 960px) {
+	div#book_top, div#book_bot, div#right_col { display:none; }
+	div#book_bot { display:none; }
+	div#book_mid { width:100%; background-image:none; }
+	div#left_col { width:100% !important; display:block; left:0; }
+	div#left_col .jspPane { padding:0 2em !important;
+		-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+		-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+		box-sizing: border-box;         /* Opera/IE 8+ */
+	}
+}
+
+/*
+ * CSS Styles that are needed by jScrollPane for it to operate correctly.
+ *
+ * Include this stylesheet in your site or copy and paste the styles below into your stylesheet - jScrollPane
+ * may not operate correctly without them.
+ */
+
+.jspContainer
+{
+	overflow: hidden;
+	position: relative;
+}
+
+.jspPane
+{
+	position: absolute;
+}
+
+.jspVerticalBar
+{
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 6px;
+	height: 100%;
+	background: red;
+	opacity:0;
+	-o-transition: opacity 0.25s linear;
+	-moz-transition: opacity 0.25s linear;
+	-webkit-transition: opacity 0.25s linear;
+	transition: opacity 0.25s linear;
+}
+.jspContainer:hover .jspVerticalBar {
+	opacity:1.0;
+}
+
+.jspVerticalBar *,
+{
+	margin: 0;
+	padding: 0;
+}
+
+.jspTrack
+{
+	background: #f3e1c2;
+	position: relative;
+}
+
+.jspDrag
+{
+	background: #e4b76a;
+	position: relative;
+	top: 0;
+	left: 0;
+	cursor: pointer;
+}
+
+.jspHorizontalBar .jspTrack,
+.jspHorizontalBar .jspDrag
+{
+	float: left;
+	height: 100%;
+}
+
+.jspCorner
+{
+	background: #eeeef4;
+	float: left;
+	height: 100%;
+}
+
+/* Yuk! CSS Hack for IE6 3 pixel bug :( */
+* html .jspCorner
+{
+	margin: 0 -3px 0 0;
+}
+
+
+
+/* =============================================================================
+   Media Queries
+   ========================================================================== */
+
+@media only screen and (min-width: 35em) {
+	/* Style adjustments for viewports that meet the condition */
+}
+
+/* =============================================================================
+   Non-Semantic Helper Classes (http://html5boilerplate.com/docs/css/#non-semantic-helper-classes)
+   ========================================================================== */
+
+.ir { display: block; border: 0; text-indent: -999em; overflow: hidden; background-color: transparent; background-repeat: no-repeat; text-align: left; direction: ltr; *line-height: 0; }
+.ir br { display: none; }
+.hidden { display: none !important; visibility: hidden; }
+.visuallyhidden { border: 0; clip: rect(0 0 0 0); height: 1px; margin: -1px; overflow: hidden; padding: 0; position: absolute; width: 1px; }
+.visuallyhidden.focusable:active, .visuallyhidden.focusable:focus { clip: auto; height: auto; margin: 0; overflow: visible; position: static; width: auto; }
+.invisible { visibility: hidden; }
+.clearfix:before, .clearfix:after { content: ""; display: table; }
+.clearfix:after { clear: both; }
+.clearfix { *zoom: 1; }
+
+/* =============================================================================
+   Print Styles
+   ========================================================================== */
+ 
+@media print {
+  * { background: transparent !important; color: black !important; box-shadow:none !important; text-shadow: none !important; filter:none !important; -ms-filter: none !important; } /* Black prints faster: h5bp.com/s */
+  a, a:visited { text-decoration: underline; }
+  a[href]:after { content: " (" attr(href) ")"; }
+  abbr[title]:after { content: " (" attr(title) ")"; }
+  .ir a:after, a[href^="javascript:"]:after, a[href^="#"]:after { content: ""; }  /* Don't show links for images, or javascript/internal links */
+  pre, blockquote { border: 1px solid #999; page-break-inside: avoid; }
+  thead { display: table-header-group; } /* h5bp.com/t */
+  tr, img { page-break-inside: avoid; }
+  img { max-width: 100% !important; }
+  @page { margin: 0.5cm; }
+  p, h2, h3 { orphans: 3; widows: 3; }
+  h2, h3 { page-break-after: avoid; }
+}

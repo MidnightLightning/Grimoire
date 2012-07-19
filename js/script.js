@@ -292,8 +292,13 @@ $(document).ready(function() {
 	$('input#new_slot_text').on('keydown', function(e) {
 		if (e.which == 9 || e.which == 13) {
 			// Tab or enter pressed
-			e.preventDefault(); // Stay in this field
 			var $new = $(this);
+			if ($new.val() == '') {
+				// Empty field, just do the default tab action
+				return;
+			}
+			
+			e.preventDefault(); // Stay in this field
 			cur_grim.addSlot($new.val());
 			
 			$new.val(''); // Clear input

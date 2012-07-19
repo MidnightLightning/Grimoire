@@ -20,10 +20,6 @@ require_once('config.php');
 	<link rel="apple-touch-icon" href="<?= $doc_root ?>img/apple-touch-icon.png" />
 	<link rel="apple-touch-icon" sizes="72x72" href="<?= $doc_root ?>img/apple-touch-icon-72x72.png" />
 	<link rel="apple-touch-icon" sizes="114x114" href="<?= $doc_root ?>img/apple-touch-icon-114x114.png" />
-	<script src="<?= $doc_root ?>js/modernizr-2.5.3.min.js"></script>
-	<script>
-		var doc_root = '<?= $doc_root ?>';
-	</script>
 </head>
 <body>
 <!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->

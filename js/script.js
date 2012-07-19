@@ -58,11 +58,11 @@ var GrimoireHeader = Backbone.View.extend({
 	},
 	events: {
 		'dblclick .name': 'edit',
-		'blur .title_update': 'endEdit',
 		'keydown .title_update': 'keyEvent'
 	},
 	initialize: function() {
 		this.model.on('change:name change:public_key', this.render, this);
+		cur_grim.on('bodyClick', this.endEdit, this); // Blur
 	},
 	edit: function() {
 		if (!cur_grim.writeAccess) return false;
@@ -71,13 +71,34 @@ var GrimoireHeader = Backbone.View.extend({
 		$input.select();
 	},
 	endEdit: function(e) {
-		this.model.set({'name': this.$el.find('input.title_update').val()}); // Save new name
-		this.render(); // Reset to default view
+		var $input = this.$el.find('input.title_update');
+		if ($input.length >= 1) {
+			this.model.set({'name': $input.val()}); // Save new name
+			this.render(); // Reset to default view
+		}
 	},
 	keyEvent: function(e) {
-		if (e.which == 13) {
-			// Enter key was pressed
-			this.endEdit();
+		switch(e.which) {
+			case 13: // Enter
+				this.endEdit();
+				break;
+			case 27: // Escape
+				this.render();
+				break;
+			case 9: // Tab
+				this.endEdit(); // Save self first
+				if (e.shiftKey) {
+					// Focus on new row field
+					// No need to do anything; the default tab action will take focus to the new row field
+				} else {
+					// Edit first row, if it exists
+					var firstModel = cur_grim.rows.at(0);
+					if (firstModel != undefined) {
+						e.preventDefault(); // Don't jump to next tab item
+						firstModel.trigger('doEdit'); // Start editing this row
+					}
+				}
+				break;
 		}
 	}
 });
@@ -129,10 +150,10 @@ var GrimoireRowView = Backbone.View.extend({
 	},
 	initialize: function() {
 		this.model.on('doEdit', this.edit, this);
+		cur_grim.on('bodyClick', this.endEdit, this);
 	},
 	events: {
 		'dblclick .name': 'edit',
-		'blur .slot_update': 'endEdit',
 		'keydown .slot_update': 'keyEvent'
 	},
 	edit: function() {
@@ -142,7 +163,9 @@ var GrimoireRowView = Backbone.View.extend({
 		$input.select();
 	},
 	endEdit: function(e) {
-		var newName = this.$el.find('input.slot_update').val();
+		var $input = this.$el.find('input.slot_update');
+		if ($input.length < 1) return; // Wasn't really in edit mode...
+		var newName = $input.val();
 		if (newName == '') {
 			// Delete row
 			this.model.destroy({
@@ -162,10 +185,10 @@ var GrimoireRowView = Backbone.View.extend({
 				this.endEdit();
 				break;
 			case 27: // Escape
-				this.$el.find('input.slot_update').val(this.model.get('name')); // Need to reset, because a 'blur' event will be fired by re-rendering
 				this.render();
 				break;
 			case 9: // Tab
+				this.endEdit(); // Save self first
 				var myIndex = this.model.collection.indexOf(this.model);
 				var nextModel = this.model.collection.at(e.shiftKey ? myIndex-1 : myIndex+1);
 				if (nextModel != undefined) {
@@ -255,6 +278,7 @@ $(document).ready(function() {
 		el: $curGrim.find('ul#grim_slots').get(0)
 	});
 	
+	// Build the Grimoire display
 	if (window.location.hash) {
 		// See if the hash is a valid grimoire
 		cur_grim.model.set('public_key', window.location.hash.substring(1));
@@ -310,6 +334,10 @@ $(document).ready(function() {
 		$('#grim_header #grim_link_content').slideToggle('fast');
 	});
 	$(document).on('click dblclick', '#grim_link_content dd', function(e) {	selectText(this); });
+	
+	// Blur trigger
+	$(document).on('click', 'body', function(e) { cur_grim.trigger('bodyClick'); }); // Let the world know the user focused on something else on the page
+	$curGrim.on('click', function(e) { e.stopPropagation(); }); // Don't let a click in the grimoire display bubble up to the document, which will stop the above 'blur' event firing for clicks inside that area.
 	
 	// Heartbeat
 	setInterval(cur_grim.doHeartbeat, 8000);

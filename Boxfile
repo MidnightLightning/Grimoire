@@ -4,7 +4,7 @@ web1:
   after_build:
     - "mv .htaccess.pg .htaccess; mv lib/db.pg.php lib/db.php; mv config.pg.php config.php" # Pagodabox-specific config files
     - "rm style.scss" # Not needed in production
-    - "curl --data-urlencode js_code@js/script.js -d compilation_level=ADVANCED_OPTIMIZATIONS -d output_info=compiled_code -d output_format=text 'http://closure-compiler.appspot.com/compile' -o js/script.js" # Compress script with Closure Compiler
+    - "curl -# --data-urlencode js_code@js/script.js -d compilation_level=ADVANCED_OPTIMIZATIONS -d output_info=compiled_code -d output_format=text 'http://closure-compiler.appspot.com/compile' -o js/script.js" # Compress script with Closure Compiler
     - "if [ ! -f composer.phar ]; then curl -s http://getcomposer.org/installer | php; fi; php composer.phar install" # Use PHP Composer for dependencies
 
 db1:

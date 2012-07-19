@@ -2,10 +2,9 @@ web1:
   name: merlin
   php_extensions: [pdo, pdo_mysql, gd]
   after_build:
-    - "mv .htaccess.pg .htaccess"
-    - "mv lib/db.pg.php lib/db.php"
-    - "mv config.pg.php config.php"
-    - "if [ ! -f composer.phar ]; then curl -s http://getcomposer.org/installer | php; fi; php composer.phar install"
+    - "mv .htaccess.pg .htaccess; mv lib/db.pg.php lib/db.php; mv config.pg.php config.php" # Pagodabox-specific config files
+    - "rm style.scss" # Not needed in production
+    - "if [ ! -f composer.phar ]; then curl -s http://getcomposer.org/installer | php; fi; php composer.phar install" # Use PHP Composer for dependencies
 
 db1:
   name: icebox

@@ -172,8 +172,7 @@ class Grimoires extends CRUD {
 		$stmt = $db->prepare('UPDATE `'.$this->table.'` SET `name`=:name WHERE `public_key`=:gid');
 		$stmt->bindValue(':name', $req->request->get('name'));
 		$stmt->bindValue(':gid', $id);
-		$stmt->execute();
-		if ($stmt->rowCount() < 1) return $this->error_out('SQL Failed update: '.var_export($stmt->errorInfo(), true), self::ERR_INTERNAL_ERROR);
+		if (!$stmt->execute()) return $this->error_out('SQL Failed update: '.var_export($stmt->errorInfo(), true), self::ERR_INTERNAL_ERROR);
 		
 		return $app->json($out, self::ERR_OK);
 	}

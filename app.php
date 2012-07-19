@@ -40,7 +40,11 @@ require_once('config.php');
 <div id="grim_header"><h1 id="grim_title" class="default">New Grimoire</h1></div>
 <ul id="grim_slots">
 </ul>
+<div id="grim_help_icon" title="show help">?</div>
 <div id="new_slot"><input type="text" id="new_slot_text" /></div>
+<div id="grim_help_content">
+Double-click an element to edit. Drag to reorder. Escape to cancel current edit.
+</div>
 </div>
 </div>
 <div id="right_col">

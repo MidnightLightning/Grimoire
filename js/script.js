@@ -334,6 +334,10 @@ $(document).ready(function() {
 		$('#grim_header #grim_link_content').slideToggle('fast');
 	});
 	$(document).on('click dblclick', '#grim_link_content dd', function(e) {	selectText(this); });
+	$('#grim_help_icon').on('click', function(e) {
+		console.log('beep');
+		$('#grim_display #grim_help_content').slideToggle('fast');
+	});
 	
 	// Blur trigger
 	$(document).on('click', 'body', function(e) { cur_grim.trigger('bodyClick'); }); // Let the world know the user focused on something else on the page

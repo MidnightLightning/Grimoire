@@ -93,7 +93,8 @@ table#features td { padding-bottom:1em; }
 
 #grim_display #grim_header { border-bottom:solid 1px #A90; }
 #grim_display #grim_link_icon { float:right; font-size:2em; font-weight:bold; color:#973; cursor:pointer; }
-#grim_display #grim_link_content { font-size:75%; color:#300; background-color:rgb(205, 170, 100); background-color:rgba(205, 170, 100, 0.3); padding:0.5em 0 0.5em 1em; margin:0.5em; display:none; }
+#grim_display #grim_help_icon { float:right; font-size:1.5em; line-height:1em; font-weight:bold; color:#973; cursor:pointer; }
+#grim_display #grim_link_content, #grim_display #grim_help_content { font-size:75%; color:#300; background-color:rgb(205, 170, 100); background-color:rgba(205, 170, 100, 0.3); padding:0.5em 0 0.5em 1em; margin:0.5em; display:none; }
 #recent { font-size:75%; color:#300; background-color:rgb(205, 170, 100); background-color:rgba(205, 170, 100, 0.3); padding:0.5em 0 0.5em 1em; margin:0.5em 0 1em; }
 #recent h2 { margin:0; }
 #recent ul { margin:0; padding-left:2em; list-style-position:inside;
@@ -114,6 +115,7 @@ table#features td { padding-bottom:1em; }
 #grim_display ul#grim_slots li:nth-child(odd) { background-color:#EC8; background-color:rgba(150,80,0, 0.2); }
 #grim_display ul#grim_slots li.ui-sortable-helper { background-color:#FDA; }
 #grim_display ul#grim_slots li.grim-sort-placeholder { height:20px;}
+#grim_display li span.name { width:80%; display:inline-block; }
 #grim_display div#new_slot { margin-left:10px; }
 #grim_display input { width:350px; }
 
